@@ -230,6 +230,9 @@ export const MoneyMap: React.FC = () => {
 
                 <VoicePlayer
                   textToSpeak={activeConceptData.audioNarration[language]}
+                  hindiFallbackText={activeConceptData.audioNarration.hi}
+                  lang={language}
+                  label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}
                   size="sm"
                   variant="secondary"
                 />

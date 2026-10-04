@@ -142,6 +142,9 @@ export const NominationSimulator: React.FC<{ onBack: () => void }> = ({ onBack }
               ? "वारस नोंदणी म्हणजे कुटुंबाची काळजी. २ मिनिटांत नाव नोंदवून तुम्ही कुटुंबाला कोर्टाच्या फेऱ्यांपासून वाचवता."
               : "Nomination is not paperwork; it is an act of care. A simple registered nominee ensures your savings reach your loved ones with zero stress."
           }
+          hindiFallbackText="नामांकन फॉर्म सिर्फ औपचारिकता नहीं, अपनों की सुरक्षा है। 2 मिनट में नॉमिनी जोड़कर आप अपने परिवार को वर्षों की परेशानी से बचाते हैं।"
+          lang={language}
+          label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}
           variant="secondary"
           size="sm"
         />

@@ -136,6 +136,9 @@ export const RiskSimulator: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               ? "जोखीम म्हणजे अनिश्चितता. कोणतीही जोखीम नसताना मोठा परतावा मिळणे शक्य नाही. नफा आणि जोखीम नेहमी हातात हात घालून चालतात."
               : "Risk is not just danger—it is uncertainty. Always choose the road that fits your personal timeline and stomach for swings."
           }
+          hindiFallbackText="जोखिम का मतलब केवल खतरा नहीं, बल्कि परिणाम का अनिश्चित होना है। अगर कोई कहे बिना जोखिम के भारी मुनाफा, तो वह झूठ बोल रहा है।"
+          lang={language}
+          label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}
           variant="secondary"
           size="sm"
         />

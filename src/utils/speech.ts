@@ -3,90 +3,153 @@ import { Language } from '../types';
 export interface VoiceStatus {
   hasNativeVoice: boolean;
   voiceName: string | null;
-  fallbackAvailable: boolean;
+  language: Language;
 }
+
+const getVoiceScore = (v: SpeechSynthesisVoice): number => {
+  const name = (v.name || '').toLowerCase();
+  // Microsoft Natural / Online voices sound human and warm
+  if (name.includes('natural') || name.includes('online')) return 3;
+  // Google cloud / neural voices
+  if (name.includes('google')) return 2;
+  return 1;
+};
+
+const isMarathiVoice = (v: SpeechSynthesisVoice): boolean => {
+  const lang = (v.lang || '').toLowerCase().replace(/_/g, '-');
+  const name = (v.name || '').toLowerCase();
+  return (
+    lang === 'mr' ||
+    lang.startsWith('mr-') ||
+    name.includes('marathi') ||
+    name.includes('मराठी') ||
+    name.includes('aarohi') ||
+    name.includes('manohar')
+  );
+};
+
+const isHindiVoice = (v: SpeechSynthesisVoice): boolean => {
+  const lang = (v.lang || '').toLowerCase().replace(/_/g, '-');
+  const name = (v.name || '').toLowerCase();
+  return (
+    lang === 'hi' ||
+    lang.startsWith('hi-') ||
+    name.includes('hindi') ||
+    name.includes('हिन्दी') ||
+    name.includes('swara') ||
+    name.includes('madhur') ||
+    name.includes('kalpana') ||
+    name.includes('hemant')
+  );
+};
+
+const isIndianEnglishVoice = (v: SpeechSynthesisVoice): boolean => {
+  const lang = (v.lang || '').toLowerCase().replace(/_/g, '-');
+  const name = (v.name || '').toLowerCase();
+  return (
+    lang === 'en-in' ||
+    name.includes('india') ||
+    name.includes('heera') ||
+    name.includes('ravi') ||
+    name.includes('neerja') ||
+    name.includes('prabhat')
+  );
+};
+
+const isEnglishVoice = (v: SpeechSynthesisVoice): boolean => {
+  const lang = (v.lang || '').toLowerCase().replace(/_/g, '-');
+  return lang === 'en' || lang.startsWith('en-');
+};
 
 class SpeechService {
   private synth: SpeechSynthesis | null = null;
   private voices: SpeechSynthesisVoice[] = [];
   private currentUtterance: SpeechSynthesisUtterance | null = null;
-  private isLoaded = false;
+  private listeners: Set<() => void> = new Set();
 
   constructor() {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       this.synth = window.speechSynthesis;
       this.loadVoices();
-      if (this.synth.onvoiceschanged !== undefined) {
-        this.synth.onvoiceschanged = () => this.loadVoices();
+
+      if (typeof window.speechSynthesis.addEventListener === 'function') {
+        window.speechSynthesis.addEventListener('voiceschanged', () => {
+          this.handleVoicesChanged();
+        });
       }
+      this.synth.onvoiceschanged = () => {
+        this.handleVoicesChanged();
+      };
     }
   }
 
-  private loadVoices() {
-    if (!this.synth) return;
-    this.voices = this.synth.getVoices();
-    if (this.voices.length > 0) {
-      this.isLoaded = true;
-    }
+  private handleVoicesChanged() {
+    this.loadVoices();
+    this.listeners.forEach((cb) => {
+      try {
+        cb();
+      } catch (err) {
+        console.warn('Voice listener error:', err);
+      }
+    });
   }
 
-  public getAvailableVoices(): SpeechSynthesisVoice[] {
-    if (!this.isLoaded && this.synth) {
-      this.loadVoices();
+  public subscribe(cb: () => void): () => void {
+    this.listeners.add(cb);
+    return () => this.listeners.delete(cb);
+  }
+
+  private loadVoices(): SpeechSynthesisVoice[] {
+    if (!this.synth) return [];
+    const v = this.synth.getVoices();
+    if (v && v.length > 0) {
+      this.voices = v;
     }
     return this.voices;
   }
 
-  public checkVoiceStatus(lang: Language): VoiceStatus {
+  public getAvailableVoices(): SpeechSynthesisVoice[] {
+    return this.loadVoices();
+  }
+
+  public getBestVoice(lang: Language): SpeechSynthesisVoice | null {
     const voices = this.getAvailableVoices();
-    if (voices.length === 0) {
-      return { hasNativeVoice: false, voiceName: null, fallbackAvailable: false };
-    }
+    if (!voices || voices.length === 0) return null;
 
     if (lang === 'mr') {
-      const mrVoice = voices.find(v => {
-        const l = v.lang.toLowerCase();
-        return l.includes('mr') || l.includes('marathi');
-      });
-
-      if (mrVoice) {
-        return { hasNativeVoice: true, voiceName: mrVoice.name, fallbackAvailable: true };
+      const mrVoices = voices.filter(isMarathiVoice);
+      if (mrVoices.length > 0) {
+        mrVoices.sort((a, b) => getVoiceScore(b) - getVoiceScore(a));
+        return mrVoices[0];
       }
-
-      // Check if Hindi voice is available as audio alternative
-      const hiVoice = voices.find(v => {
-        const l = v.lang.toLowerCase();
-        return l.includes('hi') || l.includes('hindi');
-      });
-
-      return {
-        hasNativeVoice: false,
-        voiceName: hiVoice ? hiVoice.name : null,
-        fallbackAvailable: hiVoice !== undefined
-      };
+      return null;
     }
 
     if (lang === 'hi') {
-      const hiVoice = voices.find(v => {
-        const l = v.lang.toLowerCase();
-        return l.includes('hi') || l.includes('hindi');
-      });
-      return {
-        hasNativeVoice: hiVoice !== undefined,
-        voiceName: hiVoice ? hiVoice.name : null,
-        fallbackAvailable: true
-      };
+      const hiVoices = voices.filter(isHindiVoice);
+      if (hiVoices.length > 0) {
+        hiVoices.sort((a, b) => getVoiceScore(b) - getVoiceScore(a));
+        return hiVoices[0];
+      }
+      return null;
     }
 
-    // English
-    const enVoice = voices.find(v => {
-      const l = v.lang.toLowerCase();
-      return l.includes('en-in') || l.includes('en');
-    });
+    // English: prefer Indian English accent for contextual Bharat familiarity
+    const enInVoices = voices.filter(isIndianEnglishVoice);
+    if (enInVoices.length > 0) {
+      enInVoices.sort((a, b) => getVoiceScore(b) - getVoiceScore(a));
+      return enInVoices[0];
+    }
+    const enVoices = voices.filter(isEnglishVoice);
+    return enVoices.length > 0 ? enVoices[0] : voices[0] || null;
+  }
+
+  public checkVoiceStatus(lang: Language): VoiceStatus {
+    const voice = this.getBestVoice(lang);
     return {
-      hasNativeVoice: enVoice !== undefined,
-      voiceName: enVoice ? enVoice.name : null,
-      fallbackAvailable: true
+      hasNativeVoice: voice !== null,
+      voiceName: voice ? voice.name : null,
+      language: lang
     };
   }
 
@@ -94,7 +157,6 @@ class SpeechService {
     text: string,
     lang: Language,
     options?: {
-      useFallbackIfMissing?: boolean;
       onStart?: () => void;
       onEnd?: () => void;
       onError?: (reason: string) => void;
@@ -108,43 +170,45 @@ class SpeechService {
     try {
       this.stop();
 
-      const voices = this.getAvailableVoices();
-      const status = this.checkVoiceStatus(lang);
+      // Ensure synthesizer is in active state
+      if (this.synth.paused) {
+        this.synth.resume();
+      }
 
-      let chosenVoice: SpeechSynthesisVoice | undefined;
-      let targetLang = 'en-IN';
+      const voice = this.getBestVoice(lang);
 
-      if (lang === 'mr') {
-        if (status.hasNativeVoice) {
-          chosenVoice = voices.find(v => v.lang.toLowerCase().includes('mr'));
-          targetLang = 'mr-IN';
-        } else if (options?.useFallbackIfMissing && status.fallbackAvailable) {
-          // Use Hindi voice for Marathi listeners when Marathi OS pack is missing
-          chosenVoice = voices.find(v => v.lang.toLowerCase().includes('hi'));
-          targetLang = 'hi-IN';
-        } else {
-          // Do NOT silently crash or play garbage
-          if (options?.onError) {
-            options.onError('no-marathi-voice');
-          }
-          return;
+      // STRICT INTEGRITY:
+      // If user requested Marathi, never speak English or auto-play Hindi!
+      if (lang === 'mr' && !voice) {
+        if (options?.onError) {
+          options.onError('no-marathi-voice');
         }
-      } else if (lang === 'hi') {
-        chosenVoice = voices.find(v => v.lang.toLowerCase().includes('hi'));
-        targetLang = 'hi-IN';
-      } else {
-        chosenVoice = voices.find(v => v.lang.toLowerCase().includes('en-in')) ||
-                      voices.find(v => v.lang.toLowerCase().includes('en'));
-        targetLang = 'en-IN';
+        return;
+      }
+
+      // If user requested Hindi, never fall back to an English OS voice!
+      if (lang === 'hi' && !voice) {
+        if (options?.onError) {
+          options.onError('no-hindi-voice');
+        }
+        return;
       }
 
       const utterance = new SpeechSynthesisUtterance(text);
       this.currentUtterance = utterance;
-      utterance.lang = targetLang;
-      if (chosenVoice) {
-        utterance.voice = chosenVoice;
+
+      if (lang === 'mr') {
+        utterance.lang = 'mr-IN';
+        if (voice) utterance.voice = voice;
+      } else if (lang === 'hi') {
+        utterance.lang = 'hi-IN';
+        if (voice) utterance.voice = voice;
+      } else {
+        utterance.lang = voice?.lang || 'en-IN';
+        if (voice) utterance.voice = voice;
       }
-      utterance.rate = 0.85; // Calm, conversational, unhurried pace
+
+      utterance.rate = 0.88; // Calm, clear, conversational pace for first-time learners
       utterance.pitch = 1.0;
 
       utterance.onstart = () => {

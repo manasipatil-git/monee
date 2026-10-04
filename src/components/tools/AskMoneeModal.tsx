@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Send } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { VoicePlayer } from '../common/VoicePlayer';
@@ -17,6 +17,20 @@ export const AskMoneeModal: React.FC = () => {
         : "Hey Aditi! I am monee. Ask me anything about financial concepts in plain everyday words."
     }
   ]);
+
+  useEffect(() => {
+    setMessages([
+      {
+        sender: 'monee',
+        text: language === 'mr'
+          ? "नमस्कार अदिती! मी monee आहे. पैशांविषयीची कोणतीही शंका साध्या, सोप्या मराठीत विचारा."
+          : language === 'hi'
+          ? "नमस्ते अदिति! मैं monee हूँ। पैसों की दुनिया से जुड़ा कोई भी सवाल आसान भाषा में पूछिए।"
+          : "Hey Aditi! I am monee. Ask me anything about financial concepts in plain everyday words."
+      }
+    ]);
+  }, [language]);
+
   const [isTyping, setIsTyping] = useState(false);
 
   const t = translations[language];
@@ -160,7 +174,7 @@ export const AskMoneeModal: React.FC = () => {
                 <div className="mt-1">
                   <VoicePlayer
                     textToSpeak={m.text}
-                    hindiFallbackText={m.text}
+                    lang={language}
                     size="sm"
                     variant="ghost"
                     label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}

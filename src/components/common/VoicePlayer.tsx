@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { Volume2, Square, Info, BookOpen } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { speechService, VoiceStatus } from '../../utils/speech';
+import { speechService } from '../../utils/speech';
 import { translations } from '../../data/translations';
+import { Language } from '../../types';
 
 interface VoicePlayerProps {
   textToSpeak: string;
@@ -11,6 +12,7 @@ interface VoicePlayerProps {
   variant?: 'primary' | 'secondary' | 'ghost';
   label?: string;
   className?: string;
+  lang?: Language;
 }
 
 export const VoicePlayer: React.FC<VoicePlayerProps> = ({
@@ -19,16 +21,24 @@ export const VoicePlayer: React.FC<VoicePlayerProps> = ({
   size = 'md',
   variant = 'secondary',
   label,
-  className = ''
+  className = '',
+  lang
 }) => {
   const { language } = useApp();
+  const currentLang = lang || language;
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlayingFallback, setIsPlayingFallback] = useState(false);
   const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
   const [showTextModal, setShowTextModal] = useState(false);
-  const t = translations[language];
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+  const t = translations[currentLang];
 
   useEffect(() => {
+    const unsubscribe = speechService.subscribe(() => {
+      forceUpdate();
+    });
     return () => {
+      unsubscribe();
       speechService.stop();
     };
   }, []);
@@ -37,52 +47,83 @@ export const VoicePlayer: React.FC<VoicePlayerProps> = ({
     e.stopPropagation();
     setVoiceNotice(null);
 
-    if (isPlaying) {
+    if (isPlaying || isPlayingFallback) {
       speechService.stop();
       setIsPlaying(false);
+      setIsPlayingFallback(false);
       return;
     }
 
-    const status = speechService.checkVoiceStatus(language);
+    const status = speechService.checkVoiceStatus(currentLang);
 
-    if (language === 'mr' && !status.hasNativeVoice) {
-      // Prompt user with choice rather than silent failure
-      if (status.fallbackAvailable) {
-        setVoiceNotice('मराठी व्हॉइस या फोनवर नाही. हिंदी आवाज सुरू करत आहोत.');
-        setIsPlaying(true);
-        speechService.speak(
-          hindiFallbackText || textToSpeak,
-          'hi',
-          {
-            useFallbackIfMissing: true,
-            onStart: () => setIsPlaying(true),
-            onEnd: () => {
-              setIsPlaying(false);
-              setVoiceNotice(null);
-            },
-            onError: () => {
-              setIsPlaying(false);
-              setVoiceNotice('आवाज सुरू होऊ शकला नाही. मजकूर वाचा.');
-            }
-          }
-        );
-      } else {
-        setVoiceNotice('या डिव्हाइसवर आवाज उपलब्ध नाही. खाली वाचा.');
-        setShowTextModal(true);
-      }
+    // Marathi check: if native Marathi voice is not installed on this OS/browser
+    if (currentLang === 'mr' && !status.hasNativeVoice) {
+      setVoiceNotice('या डिव्हाइसवर मराठी ऑडिओ उपलब्ध नाही. खाली वाचा.');
+      setShowTextModal(true);
+      return;
+    }
+
+    // Hindi check: if native Hindi voice is not installed on this OS/browser
+    if (currentLang === 'hi' && !status.hasNativeVoice) {
+      setVoiceNotice('इस डिवाइस पर हिंदी आवाज़ उपलब्ध नहीं है। नीचे पूरा विवरण पढ़ें।');
+      setShowTextModal(true);
       return;
     }
 
     setIsPlaying(true);
     speechService.speak(
       textToSpeak,
-      language,
+      currentLang,
       {
         onStart: () => setIsPlaying(true),
         onEnd: () => setIsPlaying(false),
-        onError: () => {
+        onError: (reason) => {
           setIsPlaying(false);
-          setVoiceNotice(language === 'mr' ? 'मजकूर वाचा' : 'Read text instead');
+          if (reason === 'no-marathi-voice') {
+            setVoiceNotice('या डिव्हाइसवर मराठी ऑडिओ उपलब्ध नाही. खाली वाचा.');
+            setShowTextModal(true);
+          } else if (reason === 'no-hindi-voice') {
+            setVoiceNotice('इस डिवाइस पर हिंदी आवाज़ उपलब्ध नहीं है। नीचे पूरा विवरण पढ़ें।');
+            setShowTextModal(true);
+          } else {
+            setVoiceNotice(currentLang === 'mr' ? 'मजकूर खाली वाचा' : currentLang === 'hi' ? 'विवरण नीचे पढ़ें' : 'Read text below');
+            setShowTextModal(true);
+          }
+        }
+      }
+    );
+  };
+
+  const handlePlayHindiFallback = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!hindiFallbackText) return;
+
+    if (isPlayingFallback) {
+      speechService.stop();
+      setIsPlayingFallback(false);
+      return;
+    }
+
+    const hiStatus = speechService.checkVoiceStatus('hi');
+    if (!hiStatus.hasNativeVoice) {
+      setVoiceNotice('हिंदी ऑडिओ देखील उपलब्ध नाही. खाली मजकूर वाचा.');
+      setShowTextModal(true);
+      return;
+    }
+
+    setIsPlaying(false);
+    setIsPlayingFallback(true);
+    speechService.speak(
+      hindiFallbackText,
+      'hi',
+      {
+        onStart: () => setIsPlayingFallback(true),
+        onEnd: () => {
+          setIsPlayingFallback(false);
+        },
+        onError: () => {
+          setIsPlayingFallback(false);
+          setVoiceNotice('ऑडिओ सुरू होऊ शकला नाही. मजकूर वाचा.');
         }
       }
     );
@@ -100,6 +141,8 @@ export const VoicePlayer: React.FC<VoicePlayerProps> = ({
     ghost: 'bg-white/80 hover:bg-white text-charcoal-700 border border-cream-300'
   };
 
+  const activePlaying = isPlaying || isPlayingFallback;
+
   return (
     <div className="relative inline-flex flex-col items-start">
       <div className="inline-flex items-center gap-1.5">
@@ -107,9 +150,9 @@ export const VoicePlayer: React.FC<VoicePlayerProps> = ({
           onClick={handleToggle}
           className={`inline-flex items-center justify-center rounded-full transition-all active:scale-95 ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
           aria-label="Listen to voice explanation"
-          title="Listen in your selected language"
+          title={`Listen in ${currentLang === 'mr' ? 'Marathi' : currentLang === 'hi' ? 'Hindi' : 'English'}`}
         >
-          {isPlaying ? (
+          {activePlaying ? (
             <>
               <Square className="w-3.5 h-3.5 fill-current text-coral-600 animate-pulse" />
               <span className="font-semibold text-coral-600">{t.stopAudio || 'Stop'}</span>
@@ -140,21 +183,42 @@ export const VoicePlayer: React.FC<VoicePlayerProps> = ({
         </button>
       </div>
 
-      {/* Voice notice / Fallback pill */}
+      {/* Voice notice pill with optional Hindi fallback action for Marathi users */}
       {voiceNotice && (
-        <div className="mt-1 text-[11px] text-charcoal-700 bg-butter-100 border border-butter-300 px-2 py-0.5 rounded-lg flex items-center gap-1 animate-fade-in">
-          <Info className="w-3 h-3 text-butter-700 flex-shrink-0" />
-          <span>{voiceNotice}</span>
+        <div className="mt-1 text-[11px] text-charcoal-700 bg-butter-100 border border-butter-300 px-2.5 py-1.5 rounded-xl flex flex-col gap-1 animate-fade-in max-w-xs">
+          <div className="flex items-center gap-1.5">
+            <Info className="w-3.5 h-3.5 text-butter-700 flex-shrink-0" />
+            <span>{voiceNotice}</span>
+          </div>
+
+          {currentLang === 'mr' && hindiFallbackText && (
+            <button
+              onClick={handlePlayHindiFallback}
+              className="mt-0.5 inline-flex items-center gap-1 text-[11px] font-bold text-coral-700 hover:text-coral-800 underline self-start cursor-pointer"
+            >
+              <Volume2 className="w-3 h-3" />
+              <span>{isPlayingFallback ? 'हिंदी ऑडिओ थांबवा' : 'ऐच्छिक: हिंदीत ऐका'}</span>
+            </button>
+          )}
         </div>
       )}
 
-      {/* Inline Reading Modal / Drawer when speech is unsupported */}
+      {/* Inline Reading Modal / Drawer */}
       {showTextModal && (
         <div className="mt-2 p-3 bg-white border border-cream-300 rounded-2xl shadow-soft text-xs text-charcoal-800 leading-relaxed max-w-xs animate-fade-in">
-          <div className="font-bold text-coral-600 mb-1 text-[11px] uppercase tracking-wider">
-            {language === 'mr' ? 'वाचा' : language === 'hi' ? 'पढ़ें' : 'Read Along'}
+          <div className="font-bold text-coral-600 mb-1 text-[11px] uppercase tracking-wider flex items-center justify-between">
+            <span>{currentLang === 'mr' ? 'मजकूर वाचा' : currentLang === 'hi' ? 'विवरण पढ़ें' : 'Read Along'}</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowTextModal(false);
+              }}
+              className="text-charcoal-400 hover:text-charcoal-700 text-xs font-bold"
+            >
+              ✕
+            </button>
           </div>
-          <p>{textToSpeak}</p>
+          <p className="font-medium text-charcoal-800">{textToSpeak}</p>
         </div>
       )}
     </div>

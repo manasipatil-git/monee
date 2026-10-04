@@ -147,6 +147,9 @@ export const NavSimulator: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               ? "NAV म्हणजे टोपलीच्या एकूण मूल्याला भागांनी भागणे. कमी NAV म्हणजे स्वस्त असा गैरसमज करून घेऊ नका."
               : "NAV is simply the value per slice of a pooled basket. It is not a measure of whether a fund is cheap or expensive."
           }
+          hindiFallbackText="NAV का मतलब है टोकरी की कुल कीमत को कुल यूनिट्स से भाग देना। कम NAV का मतलब सस्ता और ज्यादा का मतलब महंगा नहीं होता।"
+          lang={language}
+          label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}
           variant="secondary"
           size="sm"
         />

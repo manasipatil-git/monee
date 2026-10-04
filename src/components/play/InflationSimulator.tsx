@@ -112,6 +112,9 @@ export const InflationSimulator: React.FC<{ onBack: () => void }> = ({ onBack })
               ? "महागाई म्हणजे खिशातील बर्फाच्या खड्यासारखी आहे. आजचे ₹१०० उद्या कमी वस्तू खरेदी करतात. पैशांची वाढ महागाईपेक्षा जास्त झाली पाहिजे."
               : "Inflation quietly erodes your purchasing power. Cash under a mattress is like an ice cube slowly melting."
           }
+          hindiFallbackText="महंगाई जेब में रखे बर्फ के टुकड़े जैसी है। आज का ₹100 कल कम सामान खरीदेगा। नकद पैसा अलमारी में रखे-रखे असल में कमजोर होता है।"
+          lang={language}
+          label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}
           variant="secondary"
           size="sm"
         />

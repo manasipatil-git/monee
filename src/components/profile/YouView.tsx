@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Flame, Zap, Award, Globe, Volume2, ShieldCheck, RotateCcw } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Language } from '../../types';
@@ -20,15 +20,32 @@ export const YouView: React.FC = () => {
   const t = translations[language];
   const userLevel = Math.max(1, Math.floor(totalXp / 50) + 1);
 
+  const [testVoiceNotice, setTestVoiceNotice] = useState<string | null>(null);
+
   const handleTestVoice = () => {
+    setTestVoiceNotice(null);
     const sample = language === 'mr'
       ? "नमस्कार! monee मध्ये तुमचे स्वागत आहे. पैसे धोक्यात घालण्यापूर्वी ते अनुभवून पहा."
       : language === 'hi'
       ? "नमस्ते! monee में आपका स्वागत है। पैसों को जोखिम में डालने से पहले, उसे महसूस करें।"
       : "Welcome to monee! Experience money before you risk it.";
 
+    const status = speechService.checkVoiceStatus(language);
+    if (!status.hasNativeVoice) {
+      if (language === 'mr') {
+        setTestVoiceNotice('या डिव्हाइसवर मराठी व्हॉइस उपलब्ध नाही. फोन किंवा ब्राऊझर सेटिंगमध्ये मराठी भाषा पॅक जोडा.');
+      } else if (language === 'hi') {
+        setTestVoiceNotice('इस डिवाइस पर हिंदी आवाज़ उपलब्ध नहीं है। कृपया सिस्टम सेटिंग में हिंदी वॉइस पैक जोड़ें।');
+      } else {
+        setTestVoiceNotice('Voice not supported on this browser.');
+      }
+      return;
+    }
+
+    setTestVoiceNotice(language === 'mr' ? 'मराठी आवाज सुरू आहे...' : language === 'hi' ? 'हिंदी आवाज़ चल रही है...' : 'Playing voice...');
     speechService.speak(sample, language, {
-      useFallbackIfMissing: true
+      onEnd: () => setTestVoiceNotice(null),
+      onError: () => setTestVoiceNotice(language === 'mr' ? 'आवाज सुरू होऊ शकला नाही.' : 'Voice error.')
     });
   };
 
@@ -151,6 +168,13 @@ export const YouView: React.FC = () => {
           <Volume2 className="w-4 h-4 text-lavender-700" />
           <span>{language === 'mr' ? 'आवाज तपासा (Voice Test)' : language === 'hi' ? 'आवाज चेक करें' : 'Test Voice Audio'}</span>
         </button>
+
+        {testVoiceNotice && (
+          <div className="mt-2 text-xs text-charcoal-700 bg-cream-100 border border-cream-300 p-2.5 rounded-xl animate-fade-in flex items-start gap-1.5">
+            <span className="text-coral-500 font-bold">•</span>
+            <span>{testVoiceNotice}</span>
+          </div>
+        )}
       </div>
 
       {/* Public Good Trust & Compliance Card */}

@@ -355,6 +355,8 @@ export const VolatilitySimulator: React.FC<{ onBack?: () => void }> = ({ onBack 
                   : "Volatility simply means that value moves up and down like a roller coaster. The bumps on the road don't mean you won't reach your destination."
               }
               hindiFallbackText="उतार-चढ़ाव का सीधा मतलब है कि कीमत झूले की तरह ऊपर-नीचे होती है। जैसे सड़क के गड्ढे यात्रा रोकते नहीं, वैसे ही बाज़ार का उतार-चढ़ाव सफर का ही हिस्सा है।"
+              lang={language}
+              label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}
               variant="primary"
               size="md"
             />

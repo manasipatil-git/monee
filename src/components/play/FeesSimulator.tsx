@@ -136,6 +136,9 @@ export const FeesSimulator: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               ? "दरवर्षी कापले जाणारे १.५% शुल्क लहान वाटते, पण २० वर्षांत नफ्यातील मोठा हिस्सा या शुल्कात जातो. नेहमी शुल्काची माहिती घ्या."
               : "A tiny 1.5% fee sounds harmless, but compounded over twenty years, it can consume a huge fraction of your final returns."
           }
+          hindiFallbackText="फीस का छोटा सा 1.5% हिस्सा सुनने में छोटा लगता है, लेकिन 20 साल में यह आपकी कुल कमाई का बहुत बड़ा हिस्सा काट लेता है। हमेशा खर्चों की जांच करें।"
+          lang={language}
+          label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}
           variant="secondary"
           size="sm"
         />

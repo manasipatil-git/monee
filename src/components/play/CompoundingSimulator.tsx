@@ -128,6 +128,9 @@ export const CompoundingSimulator: React.FC<{ onBack: () => void }> = ({ onBack 
               ? "कंपाउंडिंग म्हणजे फक्त मूळ रकमेवरच नव्हे, तर आधी मिळालेल्या नफ्यावरही पुढे नफा मिळणे."
               : "Compounding means growth itself becomes part of future growth. Time is the true engine of compounding."
           }
+          hindiFallbackText="कंपाउंडिंग का मतलब है कि आपको सिर्फ अपनी लगाई हुई रकम पर ही नहीं, बल्कि उस पर मिले मुनाफे पर भी आगे चलकर मुनाफा मिलता है।"
+          lang={language}
+          label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}
           variant="secondary"
           size="sm"
         />

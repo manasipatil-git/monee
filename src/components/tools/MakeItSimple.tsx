@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, Wand2, Lightbulb, BookOpen } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { jargonDictionary } from '../../data/jargonDictionary';
@@ -10,7 +10,22 @@ export const MakeItSimple: React.FC = () => {
   const [inputText, setInputText] = useState(
     "Expense ratio represents the annualized percentage of fund assets dedicated towards operational and management overheads."
   );
-  const [activeTab, setActiveTab] = useState<'eli15' | 'hindi' | 'marathi' | 'analogy'>('eli15');
+  const [activeTab, setActiveTab] = useState<'eli15' | 'hindi' | 'marathi' | 'analogy'>(() => {
+    if (language === 'mr') return 'marathi';
+    if (language === 'hi') return 'hindi';
+    return 'eli15';
+  });
+
+  useEffect(() => {
+    if (language === 'mr') {
+      setActiveTab('marathi');
+    } else if (language === 'hi') {
+      setActiveTab('hindi');
+    } else {
+      setActiveTab('eli15');
+    }
+  }, [language]);
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [simplifiedResult, setSimplifiedResult] = useState<{
     simplified: string;
@@ -210,9 +225,16 @@ export const MakeItSimple: React.FC = () => {
             <VoicePlayer
               textToSpeak={getActiveTextToSpeak()}
               hindiFallbackText={simplifiedResult.hindi}
+              lang={activeTab === 'marathi' ? 'mr' : activeTab === 'hindi' ? 'hi' : 'en'}
               size="sm"
               variant="secondary"
-              label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}
+              label={
+                activeTab === 'marathi'
+                  ? 'मराठीत ऐका'
+                  : activeTab === 'hindi'
+                  ? 'हिंदी में सुनें'
+                  : 'Listen'
+              }
             />
 
             <span className="text-[10px] text-charcoal-400 italic">

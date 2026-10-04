@@ -171,6 +171,9 @@ export const DiversificationSimulator: React.FC<{ onBack: () => void }> = ({ onB
                 ? "सगळी अंडी एकाच टोपलीत ठेवली आणि ती पडली तर सगळे फुटेल. दोन-तीन टोपल्यांमध्ये वाटून ठेवले तर नुकसान मर्यादित राहते."
                 : "Because you didn't put everything in one place, the impact was cushioned. That is the fundamental power of diversification."
             }
+            hindiFallbackText="सारे अंडे एक ही टोकरी में रखोगे तो टोकरी गिरने पर सब टूट सकते हैं। अलग-अलग टोकरियों में बांटने से एक जगह का नुकसान बाकी को नहीं डुबोता।"
+            lang={language}
+            label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}
             size="sm"
             variant="secondary"
           />
