@@ -81,7 +81,7 @@ export const OnboardingFlow: React.FC = () => {
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [selectedGoal, setSelectedGoal] = useState<'money' | 'markets' | 'decisions' | 'safety'>('markets');
-  const [selectedActionChoice, setSelectedActionChoice] = useState<'hold' | 'panic' | null>('hold');
+  const [consequenceChoice, setConsequenceChoice] = useState<'sell' | 'hold' | null>(null);
 
   const t = translations[language];
 
@@ -135,13 +135,22 @@ export const OnboardingFlow: React.FC = () => {
 
       {/* ================= SCREEN 1: THE RELATABLE HOOK ================= */}
       {step === 1 && (
-        <div className="flex-1 flex flex-col justify-between py-4 animate-fade-in">
-          <div className="flex-1 flex flex-col items-center justify-center text-center">
-            {/* Friendly Mascot: Confused */}
-            <div className="mb-6 relative">
-              <div className="w-40 h-40 rounded-full bg-[#F3ECE2] border border-[#E8DFD3] flex items-center justify-center">
-                <MoneeMascot mood="confused" size="hero" />
-              </div>
+        <div className="flex-1 flex flex-col justify-between py-2 sm:py-4 animate-fade-in">
+          <div className="flex-1 flex flex-col items-center justify-center text-center px-2">
+            {/* Mascot sitting naturally on canvas (no avatar circle) */}
+            <div className="mb-6 flex flex-col items-center justify-center">
+              <MoneeMascot
+                mood="confused"
+                size="hero"
+                showThoughtBubble={true}
+                thoughtText={
+                  language === 'mr'
+                    ? 'हे नेमकं कसं चालतं?'
+                    : language === 'hi'
+                    ? 'यह सब कैसे काम करता है?'
+                    : 'How does this actually work?'
+                }
+              />
             </div>
 
             {/* Conversational, human headline */}
@@ -149,7 +158,7 @@ export const OnboardingFlow: React.FC = () => {
               {t.onboardingHookTitle}
             </h1>
 
-            {/* Smaller reassuring subline */}
+            {/* Reassuring subline */}
             <p className="text-sm sm:text-base font-medium text-[#6B6259] leading-relaxed max-w-xs">
               {t.onboardingHookSub}
             </p>
@@ -166,7 +175,7 @@ export const OnboardingFlow: React.FC = () => {
         </div>
       )}
 
-      {/* ================= SCREEN 2: WHAT DO YOU WANT TO UNDERSTAND? ================= */}
+      {/* ================= SCREEN 2: 2x2 ILLUSTRATED CHOICES ================= */}
       {step === 2 && (
         <div className="flex-1 flex flex-col justify-between py-2 animate-fade-in">
           <div>
@@ -179,8 +188,8 @@ export const OnboardingFlow: React.FC = () => {
               </p>
             </div>
 
-            {/* 4 Illustrated Tappable Object Cards */}
-            <div className="space-y-2.5">
+            {/* 2x2 Illustrated Choice Grid (Not a settings form) */}
+            <div className="grid grid-cols-2 gap-3">
               {[
                 {
                   id: 'money' as const,
@@ -212,33 +221,28 @@ export const OnboardingFlow: React.FC = () => {
                   <button
                     key={goal.id}
                     onClick={() => setSelectedGoal(goal.id)}
-                    className={`w-full p-3 rounded-2xl border-2 text-left flex items-center gap-3 transition-all cursor-pointer ${
+                    className={`p-3.5 rounded-2xl border-2 text-left flex flex-col justify-between min-h-[145px] transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-[#E85D38] bg-[#FDF3EE] shadow-soft'
+                        ? 'border-[#E85D38] bg-[#FDF3EE] shadow-soft ring-1 ring-[#E85D38]'
                         : 'border-[#E8DFD3] hover:border-[#D5C7B7] bg-white'
                     }`}
                   >
-                    <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-[#FAF7F2] border border-[#E8DFD3] flex items-center justify-center">
-                      {goal.illustration}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="w-12 h-12 rounded-xl bg-[#FAF7F2] border border-[#E8DFD3] flex items-center justify-center">
+                        {goal.illustration}
+                      </div>
+                      {isSelected && (
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#E85D38]" />
+                      )}
                     </div>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="font-extrabold text-[#1F1B18] text-sm leading-snug">
+                    <div>
+                      <div className="font-black text-[#1F1B18] text-sm leading-tight mb-1">
                         {goal.title}
                       </div>
-                      <div className="text-[11px] text-[#6B6259] truncate font-medium">
+                      <div className="text-[11px] text-[#6B6259] leading-snug line-clamp-2 font-medium">
                         {goal.desc}
                       </div>
-                    </div>
-
-                    <div
-                      className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all ${
-                        isSelected
-                          ? 'bg-[#E85D38] border-[#E85D38] text-white'
-                          : 'border-[#D5C7B7] bg-white'
-                      }`}
-                    >
-                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
                   </button>
                 );
@@ -256,7 +260,7 @@ export const OnboardingFlow: React.FC = () => {
         </div>
       )}
 
-      {/* ================= SCREEN 3: CHOOSE YOUR LANGUAGE ================= */}
+      {/* ================= SCREEN 3: RESPECTFUL REGIONAL LANGUAGE ================= */}
       {step === 3 && (
         <div className="flex-1 flex flex-col justify-between py-2 animate-fade-in">
           <div>
@@ -272,26 +276,29 @@ export const OnboardingFlow: React.FC = () => {
               </p>
             </div>
 
-            {/* 3 Large, Respectful Language Cards */}
+            {/* 3 Prominent Language Cards */}
             <div className="space-y-3">
               {[
                 {
                   code: 'mr' as Language,
-                  primary: 'मराठी',
-                  script: 'मराठीत सोपे शिक्षण',
-                  note: 'सहज, साधी आणि व्यावहारिक उदाहरणे'
+                  nativeName: 'मराठी',
+                  label: 'मराठीत सोपे शिक्षण',
+                  desc: 'सहज, साधी आणि अस्सल स्थानिक उदाहरणे',
+                  badge: 'स्थानिक भाषा'
                 },
                 {
                   code: 'hi' as Language,
-                  primary: 'हिन्दी',
-                  script: 'हिंदी में सीखें',
-                  note: 'रोज़मर्रा की आसान भाषा और मिसालें'
+                  nativeName: 'हिन्दी',
+                  label: 'हिंदी में सीखें',
+                  desc: 'रोज़मर्रा की आसान भाषा और देसी मिसालें',
+                  badge: 'राष्ट्रभाषा'
                 },
                 {
                   code: 'en' as Language,
-                  primary: 'English',
-                  script: 'Simple English',
-                  note: 'Conversational, zero financial jargon'
+                  nativeName: 'English',
+                  label: 'Simple English',
+                  desc: 'Conversational, zero financial jargon',
+                  badge: 'Everyday words'
                 },
               ].map((langOpt) => {
                 const isSelected = language === langOpt.code;
@@ -301,26 +308,29 @@ export const OnboardingFlow: React.FC = () => {
                     onClick={() => setLanguage(langOpt.code)}
                     className={`w-full p-4 rounded-2xl border-2 text-left flex items-center justify-between transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-[#E85D38] bg-[#FDF3EE] shadow-soft'
+                        ? 'border-[#E85D38] bg-[#FDF3EE] shadow-soft ring-1 ring-[#E85D38]'
                         : 'border-[#E8DFD3] hover:border-[#D5C7B7] bg-white'
                     }`}
                   >
-                    <div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-black text-lg text-[#1F1B18]">
-                          {langOpt.primary}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="font-black text-xl text-[#1F1B18]">
+                          {langOpt.nativeName}
                         </span>
-                        <span className="text-xs font-semibold text-[#6B6259]">
-                          • {langOpt.script}
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF7F2] border border-[#E8DFD3] text-[#6B6259]">
+                          {langOpt.badge}
                         </span>
                       </div>
-                      <div className="text-xs text-[#6B6259] mt-0.5 font-medium">
-                        {langOpt.note}
+                      <div className="text-xs font-bold text-[#1F1B18]/90">
+                        {langOpt.label}
+                      </div>
+                      <div className="text-[11px] text-[#6B6259] mt-0.5 font-medium">
+                        {langOpt.desc}
                       </div>
                     </div>
 
                     <div
-                      className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all ${
+                      className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all ml-3 ${
                         isSelected
                           ? 'bg-[#E85D38] border-[#E85D38] text-white'
                           : 'border-[#D5C7B7] bg-white'
@@ -344,73 +354,177 @@ export const OnboardingFlow: React.FC = () => {
         </div>
       )}
 
-      {/* ================= SCREEN 4: IMMEDIATE ACTION (TRY IT) ================= */}
+      {/* ================= SCREEN 4: IMMEDIATE CONSEQUENCE MICRO-SIMULATION ================= */}
       {step === 4 && (
         <div className="flex-1 flex flex-col justify-between py-2 animate-fade-in">
           <div>
-            {/* Mascot in worried / tense shock state */}
+            {/* Mascot State Reacting to Decision */}
             <div className="flex flex-col items-center text-center mb-3">
-              <MoneeMascot mood="worried" size="md" />
+              <MoneeMascot
+                mood={
+                  consequenceChoice === 'hold'
+                    ? 'celebrating'
+                    : consequenceChoice === 'sell'
+                    ? 'worried'
+                    : 'confused'
+                }
+                size="md"
+                showThoughtBubble={consequenceChoice !== null}
+                thoughtText={
+                  consequenceChoice === 'sell'
+                    ? (language === 'mr'
+                        ? 'अरेरे! कायमचे नुकसान झाले!'
+                        : language === 'hi'
+                        ? 'ओह! पक्का नुकसान हो गया!'
+                        : 'Loss locked in!')
+                    : consequenceChoice === 'hold'
+                    ? (language === 'mr'
+                        ? 'छान! संयम राखला!'
+                        : language === 'hi'
+                        ? 'शाबाश! धैर्य बनाए रखा!'
+                        : 'Smart patience!')
+                    : undefined
+                }
+              />
               <h2 className="text-xl sm:text-2xl font-black text-[#1F1B18] tracking-tight leading-tight mt-1 mb-1">
-                {t.onboardingActionTitle}
+                {t.onboardingUhOh}
               </h2>
-              <p className="text-xs text-[#6B6259] font-medium">
-                {t.onboardingActionSub}
+              <p className="text-xs text-[#6B6259] font-medium max-w-xs">
+                {t.onboardingDropSub}
               </p>
             </div>
 
             {/* Tactile Market Shock Receipt / Balance Card */}
             <div className="bg-white border-2 border-[#E8DFD3] rounded-2xl p-4 shadow-soft mb-3">
-              <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#6B6259] pb-2 border-b border-[#F2ECE1]">
-                <span>{language === 'mr' ? 'सरावाचे पैसे' : language === 'hi' ? 'प्रैक्टिस बैलेंस' : 'Practice Balance'}</span>
-                <span className="text-[#D63D2E] font-bold animate-pulse">📉 -20% Drop</span>
+              <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-[#6B6259] pb-2 border-b border-[#F2ECE1]">
+                <span>
+                  {language === 'mr'
+                    ? 'सरावाचा पोर्टफोलिओ'
+                    : language === 'hi'
+                    ? 'प्रैक्टिस पोर्टफोलियो'
+                    : 'Practice Portfolio'}
+                </span>
+                <span className="text-[#D63D2E] font-black px-2 py-0.5 rounded-md bg-[#FDF0EE] border border-[#FADCD7]">
+                  📉 -20% Drop
+                </span>
               </div>
 
-              <div className="flex items-baseline justify-between mt-3 mb-1">
+              <div className="flex items-baseline justify-between mt-3">
                 <div>
-                  <div className="text-[11px] text-[#6B6259]">{language === 'mr' ? 'मूळ रक्कम' : language === 'hi' ? 'शुरुआती राशि' : 'Starting amount'}</div>
-                  <div className="text-sm font-bold text-[#6B6259] line-through">₹50,000</div>
+                  <div className="text-[11px] text-[#6B6259] font-medium">
+                    {language === 'mr'
+                      ? 'सुरुवातीची रक्कम'
+                      : language === 'hi'
+                      ? 'शुरुआती राशि'
+                      : 'Starting balance'}
+                  </div>
+                  <div className="text-sm font-bold text-[#9E9285] line-through">₹50,000</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[11px] text-[#D63D2E] font-semibold">{language === 'mr' ? 'सध्याचे मूल्य' : language === 'hi' ? 'वर्तमान मूल्य' : 'Current value'}</div>
+                  <div className="text-[11px] text-[#D63D2E] font-bold">
+                    {consequenceChoice === 'sell'
+                      ? (language === 'mr'
+                          ? 'अंतिम रोख (नुकसान)'
+                          : language === 'hi'
+                          ? 'अंतिम नकद (नुकसान)'
+                          : 'Cashed out (Loss)')
+                      : (language === 'mr'
+                          ? 'सध्याचे मूल्य'
+                          : language === 'hi'
+                          ? 'वर्तमान मूल्य'
+                          : 'Current paper value')}
+                  </div>
                   <div className="text-2xl font-black text-[#D63D2E]">₹40,000</div>
                 </div>
               </div>
             </div>
 
-            {/* Quick interactive choice teaser */}
-            <div className="grid grid-cols-2 gap-2 mb-2">
+            {/* Two visceral interactive choices */}
+            <div className="grid grid-cols-2 gap-2.5 mb-3">
               <button
-                onClick={() => setSelectedActionChoice('panic')}
-                className={`p-2.5 rounded-xl border-2 text-center text-xs font-bold transition-all cursor-pointer ${
-                  selectedActionChoice === 'panic'
-                    ? 'border-[#D63D2E] bg-[#FDF0EE] text-[#D63D2E]'
-                    : 'border-[#E8DFD3] bg-white text-[#6B6259] hover:border-[#D5C7B7]'
+                onClick={() => setConsequenceChoice('sell')}
+                className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer ${
+                  consequenceChoice === 'sell'
+                    ? 'border-[#D63D2E] bg-[#FDF0EE] shadow-soft ring-1 ring-[#D63D2E]'
+                    : 'border-[#E8DFD3] bg-white hover:border-[#D5C7B7]'
                 }`}
               >
-                {t.onboardingChoicePanic}
+                <div className="w-7 h-7 rounded-lg bg-[#FAF7F2] border border-[#E8DFD3] flex items-center justify-center mb-1.5 text-xs font-black text-[#D63D2E]">
+                  ⚡
+                </div>
+                <div className="text-xs font-black text-[#D63D2E] leading-tight">
+                  {t.onboardingChoiceSell}
+                </div>
               </button>
 
               <button
-                onClick={() => setSelectedActionChoice('hold')}
-                className={`p-2.5 rounded-xl border-2 text-center text-xs font-bold transition-all cursor-pointer ${
-                  selectedActionChoice === 'hold'
-                    ? 'border-[#287D54] bg-[#EAF4F0] text-[#287D54]'
-                    : 'border-[#E8DFD3] bg-white text-[#6B6259] hover:border-[#D5C7B7]'
+                onClick={() => setConsequenceChoice('hold')}
+                className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer ${
+                  consequenceChoice === 'hold'
+                    ? 'border-[#287D54] bg-[#EAF4F0] shadow-soft ring-1 ring-[#287D54]'
+                    : 'border-[#E8DFD3] bg-white hover:border-[#D5C7B7]'
                 }`}
               >
-                {t.onboardingChoiceHold}
+                <div className="w-7 h-7 rounded-lg bg-[#FAF7F2] border border-[#E8DFD3] flex items-center justify-center mb-1.5 text-xs font-black text-[#287D54]">
+                  🛡️
+                </div>
+                <div className="text-xs font-black text-[#287D54] leading-tight">
+                  {t.onboardingChoiceHold}
+                </div>
               </button>
             </div>
+
+            {/* Dynamic Immediate Consequence Feedback */}
+            {consequenceChoice === 'sell' && (
+              <div className="p-3.5 rounded-2xl border-2 border-[#D63D2E] bg-[#FDF0EE] animate-fade-in mb-2">
+                <div className="text-xs font-black text-[#D63D2E] mb-1 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#D63D2E]" />
+                  <span>{t.onboardingConsequenceSellTag}</span>
+                </div>
+                <p className="text-xs text-[#1F1B18] font-medium leading-relaxed">
+                  {t.onboardingConsequenceSellText}
+                </p>
+              </div>
+            )}
+
+            {consequenceChoice === 'hold' && (
+              <div className="p-3.5 rounded-2xl border-2 border-[#287D54] bg-[#EAF4F0] animate-fade-in mb-2">
+                <div className="text-xs font-black text-[#287D54] mb-1 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#287D54]" />
+                  <span>{t.onboardingConsequenceHoldTag}</span>
+                </div>
+                <p className="text-xs text-[#1F1B18] font-medium leading-relaxed">
+                  {t.onboardingConsequenceHoldText}
+                </p>
+              </div>
+            )}
+
+            {consequenceChoice === null && (
+              <div className="p-3 rounded-2xl border border-dashed border-[#D5C7B7] bg-[#FAF7F2] text-center mb-2">
+                <p className="text-xs font-medium text-[#6B6259]">
+                  {language === 'mr'
+                    ? '👆 वरील एका पर्यायावर टॅप करून परिणाम पहा'
+                    : language === 'hi'
+                    ? '👆 ऊपर किसी एक विकल्प पर टैप करके असर देखें'
+                    : '👆 Tap an option above to experience the consequence'}
+                </p>
+              </div>
+            )}
           </div>
 
-          {/* Action CTA: Directly enters the real crash simulator */}
+          {/* Action CTA: Completes onboarding & directly opens Volatility Simulator */}
           <div>
             <button
-              onClick={handleFinishOnboarding}
+              onClick={() => {
+                if (!consequenceChoice) {
+                  setConsequenceChoice('sell');
+                } else {
+                  handleFinishOnboarding();
+                }
+              }}
               className="w-full py-3.5 px-6 rounded-2xl bg-[#E85D38] hover:bg-[#D34B26] text-white font-bold text-base shadow-soft flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer"
             >
-              <span>{t.onboardingActionBtn}</span>
+              <span>{consequenceChoice ? t.onboardingConsequenceCTA : t.onboardingActionBtn}</span>
               <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </button>
             <p className="text-[10px] text-center text-[#9E9285] mt-2 font-medium">
@@ -418,7 +532,7 @@ export const OnboardingFlow: React.FC = () => {
                 ? 'कोणताही धोका नाही • १० सेकंदात प्रत्यक्ष अनुभव घ्या'
                 : language === 'hi'
                 ? 'शून्य जोखिम • 10 सेकंड में खुद अनुभव करें'
-                : 'Zero risk • Experience consequences in 10 seconds'}
+                : 'Zero risk • Experience consequences before risking real money'}
             </p>
           </div>
         </div>
