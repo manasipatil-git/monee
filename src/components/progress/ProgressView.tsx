@@ -80,12 +80,12 @@ export const ProgressView: React.FC = () => {
 
   return (
     <div className="space-y-4 pb-8 animate-fade-in">
-      {/* Streak Hero Card */}
-      <div className="bg-gradient-to-br from-orange-500 to-coral-600 text-white rounded-3xl p-5 shadow-coral-glow/30 relative overflow-hidden">
+      {/* Streak Hero Card (Botanical Green Solid Block) */}
+      <div className="bg-[#246B4F] text-white rounded-3xl p-5 shadow-soft relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-2xl bg-white/20 backdrop-blur-sm">
-              <Flame className="w-6 h-6 fill-current text-white animate-bounce-soft" />
+            <span className="p-2 rounded-2xl bg-white/15">
+              <Flame className="w-6 h-6 fill-current text-[#EBB328] animate-bounce-soft" />
             </span>
             <div>
               <div className="text-2xl font-black tracking-tight">
@@ -105,14 +105,14 @@ export const ProgressView: React.FC = () => {
         </div>
 
         {/* Weekly Calendar Dots */}
-        <div className="flex items-center justify-between bg-black/15 backdrop-blur-sm rounded-2xl p-3">
+        <div className="flex items-center justify-between bg-black/15 rounded-2xl p-3">
           {weekDays.map((item, idx) => (
             <div key={idx} className="flex flex-col items-center gap-1.5">
               <span className="text-[10px] font-bold text-white/70">{item.day}</span>
               <div
                 className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
                   item.active
-                    ? 'bg-white text-coral-600 shadow-sm'
+                    ? 'bg-white text-[#246B4F] shadow-sm'
                     : 'bg-white/10 text-white/40 border border-white/20'
                 }`}
               >

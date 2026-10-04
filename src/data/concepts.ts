@@ -536,8 +536,8 @@ export const conceptsData: ConceptItem[] = [
       mr: "आपल्या विश्वासातील व्यक्तीकडे चावी सोपवणे."
     },
     icon: '👨‍👩‍👧',
-    themeColor: 'coral',
-    badgeColor: 'bg-orange-50 text-orange-600 border-orange-200',
+    themeColor: 'lavender',
+    badgeColor: 'bg-lavender-50 text-lavender-700 border-lavender-200',
     timeEstimate: '3 min',
     progress: 10,
     simpleExplanation: {

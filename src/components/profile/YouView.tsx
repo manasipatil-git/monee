@@ -53,7 +53,7 @@ export const YouView: React.FC = () => {
     <div className="space-y-4 pb-8 animate-fade-in">
       {/* Profile Card */}
       <div className="bg-white rounded-3xl p-5 border border-cream-300 shadow-soft text-center relative overflow-hidden">
-        <div className="w-20 h-20 rounded-3xl bg-coral-100 border-2 border-coral-200 flex items-center justify-center text-4xl mx-auto mb-3 shadow-inner">
+        <div className="w-20 h-20 rounded-3xl bg-lavender-100 border-2 border-lavender-200 flex items-center justify-center text-4xl mx-auto mb-3 shadow-inner">
           🦊
         </div>
 
@@ -71,7 +71,7 @@ export const YouView: React.FC = () => {
         {/* 3 Metric Pills */}
         <div className="grid grid-cols-3 gap-2 pt-3 border-t border-cream-200 text-center">
           <div className="p-2 bg-cream-50 rounded-2xl border border-cream-200">
-            <div className="flex items-center justify-center gap-1 text-orange-600 font-bold text-xs mb-0.5">
+            <div className="flex items-center justify-center gap-1 text-butter-700 font-bold text-xs mb-0.5">
               <Flame className="w-3.5 h-3.5 fill-current" />
               <span>{language === 'mr' ? 'सवय' : language === 'hi' ? 'आदत' : 'Streak'}</span>
             </div>

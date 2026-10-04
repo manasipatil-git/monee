@@ -140,7 +140,7 @@ export const VolatilitySimulator: React.FC<{ onBack?: () => void }> = ({ onBack 
                 ? 'bg-red-50/70 border-red-200'
                 : currentRoundData.trend === 'up'
                 ? 'bg-mint-50/60 border-mint-200'
-                : 'bg-orange-50/60 border-orange-200'
+                : 'bg-rose-50/60 border-rose-200'
             }`}
           >
             <div className="flex items-center justify-between mb-1">
@@ -203,7 +203,7 @@ export const VolatilitySimulator: React.FC<{ onBack?: () => void }> = ({ onBack 
               <path
                 d={pathD}
                 fill="none"
-                stroke={currentRound === 5 ? "#EF4444" : "#FF5C38"}
+                stroke={currentRound === 5 ? "#EF4444" : "#246B4F"}
                 strokeWidth="3.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"

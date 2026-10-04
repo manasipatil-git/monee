@@ -3,28 +3,56 @@
 @tailwind utilities;
 
 :root {
-  /* Warm editorial & paper-led design tokens */
-  --monee-bg: #FAF7F2;          /* Warm unbleached paper canvas */
-  --monee-surface: #FFFFFF;     /* Crisp warm surface */
-  --monee-surface-warm: #F3ECE2;/* Gentle tinted paper container */
-  --monee-ink: #1F1B18;         /* Deep espresso ink typography */
-  --monee-ink-muted: #6B6259;   /* Warm secondary reading tone */
-  --monee-ink-subtle: #9E9285;  /* Soft divider / pencil tone */
-  --monee-primary: #E85D38;     /* Terracotta primary (warm, human, grounded) */
-  --monee-primary-hover: #D34B26;
-  --monee-primary-soft: #FDEFEA;
-  --monee-secondary: #2C6B56;   /* Earthy sage / deep forest accent */
-  --monee-secondary-soft: #EBF4F0;
-  --monee-accent: #E5A124;      /* Warm golden mustard */
-  --monee-accent-soft: #FCF6E8;
-  --monee-muted: #E8DFD3;       /* Warm editorial separator border */
-  --monee-success: #287D54;     /* Reassuring green */
-  --monee-danger: #D63D2E;      /* Editorial alert red */
+  /* ===================================================
+     MONEE DESIGN TOKENS (Illustrated & Playful Palette)
+     80% calm/light neutrals, 15% soft secondaries, 5% strong accents
+     =================================================== */
+
+  /* Neutral Backgrounds (80%) */
+  --monee-bg: #FAF8F5;            /* Warm ivory / soft cream canvas */
+  --monee-surface: #FFFFFF;       /* Pure white card surface */
+  --monee-surface-warm: #F4EFEA;  /* Pale oat / gentle warm container */
+  --monee-surface-lavender: #F4F2FA; /* Soft pale lavender card */
+  --monee-surface-sage: #EEF5F1;     /* Soft pale sage card */
+  --monee-surface-butter: #FEF9E7;   /* Soft pale butter card */
+
+  /* Typography */
+  --monee-ink: #1A1918;           /* Deep charcoal / almost-black */
+  --monee-ink-muted: #68645E;     /* Calm charcoal secondary reading */
+  --monee-ink-subtle: #9C968F;    /* Soft divider & hint tone */
+
+  /* Primary: Botanical / Sage Green */
+  --monee-primary: #246B4F;       /* Botanical sage green */
+  --monee-primary-hover: #1D553E;
+  --monee-primary-soft: #EEF5F1;
+  --monee-primary-border: #BADCCB;
+
+  /* Secondary: Soft Lavender / Lilac (15%) */
+  --monee-secondary: #7C6DB8;     /* Playful soft lavender */
+  --monee-secondary-hover: #6557A3;
+  --monee-secondary-soft: #F4F2FA;
+  --monee-secondary-border: #D8D2F0;
+
+  /* Accent: Butter Yellow (5%) */
+  --monee-accent: #EBB328;        /* Sunny butter yellow */
+  --monee-accent-hover: #D49D19;
+  --monee-accent-soft: #FEF9E7;
+  --monee-accent-border: #FDF1C2;
+
+  /* Muted Coral / Rose Accent (Small optional accent) */
+  --monee-rose: #E26357;
+  --monee-rose-soft: #FDF4F3;
+
+  /* Editorial Dividers & Cards */
+  --monee-muted: #EAE4DC;         /* Warm gray/cream border */
+  --monee-muted-hover: #DDD5C9;
+  --monee-success: #287D54;       /* Botanical green */
+  --monee-danger: #D64234;        /* Calm editorial loss/drop red */
 }
 
 @layer base {
   body {
-    background-color: #161412;
+    background-color: #121312;
     color: var(--monee-ink);
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -34,8 +62,8 @@
   }
 
   ::selection {
-    background-color: #FCE6DD;
-    color: #C03B18;
+    background-color: #DCECE3;
+    color: #16402E;
   }
 }
 

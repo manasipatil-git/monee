@@ -67,10 +67,10 @@ export const HomeView: React.FC = () => {
         </button>
       </div>
 
-      {/* Calm Streak Habit Card */}
-      <div className="bg-gradient-to-r from-orange-50 via-cream-100 to-orange-50 border border-orange-200 rounded-3xl p-3.5 flex items-center justify-between shadow-xs">
+      {/* Calm Streak Habit Card (Butter Yellow Accent) */}
+      <div className="bg-[#FEF9E7] border border-[#FDF1C2] rounded-3xl p-3.5 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shadow-xs">
+          <div className="w-10 h-10 rounded-2xl bg-white text-[#EBB328] flex items-center justify-center shadow-xs">
             <Flame className="w-5 h-5 fill-current animate-bounce-soft" />
           </div>
           <div>
@@ -85,7 +85,7 @@ export const HomeView: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('progress')}
-          className="text-xs font-bold text-coral-600 hover:text-coral-700 flex items-center gap-0.5"
+          className="text-xs font-bold text-[#246B4F] hover:text-[#1D553E] flex items-center gap-0.5"
         >
           <span>{t.viewProgress}</span>
           <ArrowRight className="w-3.5 h-3.5" />

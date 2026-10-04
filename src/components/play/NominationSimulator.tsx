@@ -24,7 +24,7 @@ export const NominationSimulator: React.FC<{ onBack: () => void }> = ({ onBack }
           <span>Back</span>
         </button>
 
-        <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200">
+        <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-lavender-50 text-lavender-700 border border-lavender-200">
           Family Awareness Story
         </span>
       </div>

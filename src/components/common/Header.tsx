@@ -21,35 +21,35 @@ export const Header: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#E8DFD3] px-4 py-2.5 transition-all">
+    <header className="sticky top-0 z-40 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#EAE4DC] px-4 py-2.5 transition-all">
       <div className="flex items-center justify-between gap-2">
         {/* Brand */}
         <div className="flex items-center gap-1.5">
-          <div className="w-7 h-7 rounded-xl bg-[#E85D38] text-white flex items-center justify-center font-black text-sm tracking-tight shadow-xs">
+          <div className="w-7 h-7 rounded-xl bg-[#246B4F] text-white flex items-center justify-center font-black text-sm tracking-tight shadow-xs">
             m
           </div>
-          <span className="font-black text-lg tracking-tight text-[#1F1B18]">
+          <span className="font-black text-lg tracking-tight text-[#1A1918]">
             monee
           </span>
         </div>
 
         {/* Stats & Language */}
         <div className="flex items-center gap-2">
-          {/* Streak Chip */}
+          {/* Streak Chip (Butter Yellow Accent) */}
           <div
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFF2EB] border border-[#FAD6C5] text-[#C03B18] text-xs font-bold"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FEF9E7] border border-[#FDF1C2] text-[#B48106] text-xs font-bold"
             title={`${streakDays} Day Learning Streak`}
           >
             <Flame className="w-3.5 h-3.5 fill-current animate-bounce-soft" />
             <span>{streakDays}</span>
           </div>
 
-          {/* XP Chip */}
+          {/* XP Chip (Soft Lavender Secondary) */}
           <div
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FCF6E8] border border-[#F4E3B8] text-[#1F1B18] text-xs font-bold relative"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F4F2FA] border border-[#D8D2F0] text-[#504487] text-xs font-bold relative"
             title={`${totalXp} Knowledge XP`}
           >
-            <Zap className="w-3.5 h-3.5 fill-[#E5A124] text-[#E5A124]" />
+            <Zap className="w-3.5 h-3.5 fill-[#7C6DB8] text-[#7C6DB8]" />
             <span>{totalXp}</span>
 
             {/* XP Gain Floating Pill */}
@@ -61,15 +61,15 @@ export const Header: React.FC = () => {
           </div>
 
           {/* Trilingual Switcher */}
-          <div className="flex items-center bg-[#F2ECE1] p-0.5 rounded-full border border-[#E8DFD3]">
+          <div className="flex items-center bg-[#F4EFEA] p-0.5 rounded-full border border-[#EAE4DC]">
             {languages.map((l) => (
               <button
                 key={l.code}
                 onClick={() => setLanguage(l.code)}
                 className={`px-2 py-0.5 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
                   language === l.code
-                    ? 'bg-[#1F1B18] text-white shadow-xs'
-                    : 'text-[#6B6259] hover:text-[#1F1B18]'
+                    ? 'bg-[#1A1918] text-white shadow-xs'
+                    : 'text-[#68645E] hover:text-[#1A1918]'
                 }`}
               >
                 {l.label}

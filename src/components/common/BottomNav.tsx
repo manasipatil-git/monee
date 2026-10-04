@@ -24,7 +24,7 @@ export const BottomNav: React.FC = () => {
   };
 
   return (
-    <nav className="sticky bottom-0 z-40 bg-[#FAF7F2]/95 backdrop-blur-md border-t border-[#E8DFD3] px-2 py-1.5 transition-all">
+    <nav className="sticky bottom-0 z-40 bg-[#FAF8F5]/95 backdrop-blur-md border-t border-[#EAE4DC] px-2 py-1.5 transition-all">
       <div className="flex items-center justify-around">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -35,8 +35,8 @@ export const BottomNav: React.FC = () => {
               onClick={() => handleTabClick(tab.id)}
               className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all relative cursor-pointer ${
                 isActive
-                  ? 'text-[#E85D38] scale-105'
-                  : 'text-[#6B6259] hover:text-[#1F1B18]'
+                  ? 'text-[#246B4F] scale-105'
+                  : 'text-[#68645E] hover:text-[#1A1918]'
               }`}
             >
               <div className="relative">
@@ -46,12 +46,12 @@ export const BottomNav: React.FC = () => {
                   }`}
                 />
                 {isActive && (
-                  <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-[#E85D38] rounded-full" />
+                  <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-[#246B4F] rounded-full" />
                 )}
               </div>
               <span
                 className={`text-[10px] mt-0.5 font-medium transition-colors ${
-                  isActive ? 'font-black text-[#E85D38]' : 'text-[#6B6259]'
+                  isActive ? 'font-black text-[#246B4F]' : 'text-[#68645E]'
                 }`}
               >
                 {tab.label}
