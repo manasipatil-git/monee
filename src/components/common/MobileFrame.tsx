@@ -6,6 +6,11 @@ export const MobileFrame: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isFramed, setIsFramed] = useState(true);
   const { isDemoTourActive, setIsDemoTourActive } = useApp();
 
+  const handleResetDemo = () => {
+    localStorage.clear();
+    window.location.href = window.location.pathname;
+  };
+
   return (
     <div className="min-h-screen bg-[#121312] text-[#1A1918] flex flex-col items-center justify-center p-0 md:p-6 transition-all selection:bg-[#DCECE3] selection:text-[#16402E]">
       {/* Desktop Top Utilities Bar (Only on md+ screens) */}
@@ -21,6 +26,14 @@ export const MobileFrame: React.FC<{ children: React.ReactNode }> = ({ children 
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={handleResetDemo}
+            className="flex items-center gap-1 text-[11px] font-bold text-[#B48106] bg-[#FEF9E7] hover:bg-[#FDF1C2] px-2.5 py-1 rounded-full border border-[#FDF1C2] transition-all cursor-pointer"
+            title="Reset entire app to 0:00 for a fresh screen recording take"
+          >
+            <span>↺ Reset Demo</span>
+          </button>
+
           <button
             onClick={() => setIsDemoTourActive(!isDemoTourActive)}
             className="flex items-center gap-1 text-[11px] font-bold text-[#7C6DB8] bg-[#7C6DB8]/15 hover:bg-[#7C6DB8]/25 px-2.5 py-1 rounded-full border border-[#7C6DB8]/30 transition-all cursor-pointer"
@@ -51,10 +64,14 @@ export const MobileFrame: React.FC<{ children: React.ReactNode }> = ({ children 
         <div className="w-full bg-[#FAF8F5]/95 backdrop-blur-sm px-6 pt-3 pb-1 flex items-center justify-between text-[11px] font-bold text-[#1A1918] z-50 select-none border-b border-[#EAE4DC]/40">
           <span>9:41</span>
           
-          {/* Dynamic Island Pill */}
-          <div className="w-20 h-4 bg-[#1A1918] rounded-full flex items-center justify-center">
+          {/* Dynamic Island Pill with Demo Reset */}
+          <button
+            onClick={handleResetDemo}
+            title="Click to reset demo to 0:00"
+            className="w-20 h-4 bg-[#1A1918] hover:bg-[#2A2724] rounded-full flex items-center justify-center cursor-pointer transition-colors"
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-[#34302D] ml-auto mr-2" />
-          </div>
+          </button>
 
           <div className="flex items-center gap-1.5 text-[#6B6259]">
             <Wifi className="w-3 h-3 stroke-[2.5]" />

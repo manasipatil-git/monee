@@ -165,13 +165,22 @@ export const OnboardingFlow: React.FC = () => {
           </div>
 
           {/* Action button: Dark ink primary CTA */}
-          <button
-            onClick={() => setStep(2)}
-            className="w-full py-3.5 px-6 rounded-2xl bg-[#1A1918] hover:bg-[#2A2724] text-white font-bold text-base shadow-soft flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer"
-          >
-            <span>{t.onboardingHookBtn}</span>
-            <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-          </button>
+          <div>
+            <button
+              onClick={handleFinishOnboarding}
+              className="w-full py-3.5 px-6 rounded-2xl bg-[#1A1918] hover:bg-[#2A2724] text-white font-bold text-base shadow-soft flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer"
+            >
+              <span>{t.onboardingHookBtn}</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+            </button>
+
+            <button
+              onClick={() => setStep(2)}
+              className="w-full text-center text-xs text-[#68645E] hover:text-[#1A1918] mt-2.5 font-medium py-1 cursor-pointer transition-colors"
+            >
+              {language === 'mr' ? 'किंवा ध्येय व भाषा आधी निवडा →' : language === 'hi' ? 'या पहले लक्ष्य और भाषा चुनें →' : 'or customize goals & language first →'}
+            </button>
+          </div>
         </div>
       )}
 

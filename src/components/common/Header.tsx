@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Zap, Compass } from 'lucide-react';
+import { Flame, Zap, Compass, RotateCcw } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Language } from '../../types';
 
@@ -76,6 +76,18 @@ export const Header: React.FC = () => {
               </button>
             ))}
           </div>
+
+          {/* Reset Demo button for quick recording restart */}
+          <button
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = window.location.pathname;
+            }}
+            className="p-1 rounded-full text-[#68645E] hover:text-[#1A1918] hover:bg-[#F4EFEA] transition-colors cursor-pointer"
+            title="Reset demo to 0:00"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
 
           {/* Judge Demo Quick Trigger */}
           <button
