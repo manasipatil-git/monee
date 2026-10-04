@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { VoicePlayer } from '../common/VoicePlayer';
 import { translations } from '../../data/translations';
 import { volatilityRounds, emotionOptions } from '../../data/simulations';
+import { MoneeMascot } from '../common/MoneeMascot';
 
 export const VolatilitySimulator: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const { language, addXp, markConceptCompleted, unlockBadge } = useApp();
@@ -221,9 +222,12 @@ export const VolatilitySimulator: React.FC<{ onBack?: () => void }> = ({ onBack 
 
           {/* Headline Message in active language */}
           <div className="mb-4">
-            <h4 className="text-lg font-black text-charcoal-900 mb-1">
-              {currentRoundData.headline[language]}
-            </h4>
+            <div className="flex items-center gap-2 mb-1">
+              {currentRound === 5 && <MoneeMascot mood="worried" size="sm" />}
+              <h4 className="text-lg font-black text-charcoal-900">
+                {currentRoundData.headline[language]}
+              </h4>
+            </div>
             <p className="text-xs text-charcoal-600 leading-relaxed">
               {currentRoundData.subtext[language]}
             </p>
@@ -270,9 +274,7 @@ export const VolatilitySimulator: React.FC<{ onBack?: () => void }> = ({ onBack 
       {/* Screen 6: Reflection Poll */}
       {currentRound === 6 && (
         <div className="py-2 animate-fade-in">
-          <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mx-auto mb-3">
-            <Heart className="w-6 h-6 fill-current" />
-          </div>
+          <MoneeMascot mood="curious" size="md" className="mx-auto mb-2" />
 
           <h3 className="text-xl font-black text-charcoal-900 text-center mb-1">
             {t.howDidItFeel}
@@ -316,6 +318,8 @@ export const VolatilitySimulator: React.FC<{ onBack?: () => void }> = ({ onBack 
       {/* Screen 7: Wisdom & Analogy */}
       {currentRound === 7 && (
         <div className="py-2 animate-fade-in">
+          <MoneeMascot mood="celebrating" size="md" className="mx-auto mb-2" />
+
           <div className="p-4 rounded-3xl bg-lavender-50 border border-lavender-200 mb-4">
             <span className="text-xs font-bold uppercase tracking-wider text-lavender-700 block mb-1">
               {t.fundamentalLesson}

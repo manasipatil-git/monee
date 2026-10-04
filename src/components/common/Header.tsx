@@ -21,14 +21,14 @@ export const Header: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-cream-100/90 backdrop-blur-md border-b border-cream-200/80 px-4 py-2.5 transition-all">
+    <header className="sticky top-0 z-40 bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#E8DFD3] px-4 py-2.5 transition-all">
       <div className="flex items-center justify-between gap-2">
         {/* Brand */}
         <div className="flex items-center gap-1.5">
-          <div className="w-7 h-7 rounded-xl bg-coral-500 text-white flex items-center justify-center font-black text-sm tracking-tight shadow-coral-glow/30">
+          <div className="w-7 h-7 rounded-xl bg-[#E85D38] text-white flex items-center justify-center font-black text-sm tracking-tight shadow-xs">
             m
           </div>
-          <span className="font-extrabold text-lg tracking-tight text-charcoal-900">
+          <span className="font-black text-lg tracking-tight text-[#1F1B18]">
             monee
           </span>
         </div>
@@ -37,7 +37,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-2">
           {/* Streak Chip */}
           <div
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-600 text-xs font-bold"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFF2EB] border border-[#FAD6C5] text-[#C03B18] text-xs font-bold"
             title={`${streakDays} Day Learning Streak`}
           >
             <Flame className="w-3.5 h-3.5 fill-current animate-bounce-soft" />
@@ -46,30 +46,30 @@ export const Header: React.FC = () => {
 
           {/* XP Chip */}
           <div
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-butter-100 border border-butter-200 text-charcoal-800 text-xs font-bold relative"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FCF6E8] border border-[#F4E3B8] text-[#1F1B18] text-xs font-bold relative"
             title={`${totalXp} Knowledge XP`}
           >
-            <Zap className="w-3.5 h-3.5 fill-butter-400 text-butter-500" />
+            <Zap className="w-3.5 h-3.5 fill-[#E5A124] text-[#E5A124]" />
             <span>{totalXp}</span>
 
             {/* XP Gain Floating Pill */}
             {lastXpGain && (
-              <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-mint-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md whitespace-nowrap animate-bounce-soft">
+              <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-[#287D54] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md whitespace-nowrap animate-bounce-soft">
                 +{lastXpGain.amount} XP
               </span>
             )}
           </div>
 
           {/* Trilingual Switcher */}
-          <div className="flex items-center bg-cream-200 p-0.5 rounded-full border border-cream-300">
+          <div className="flex items-center bg-[#F2ECE1] p-0.5 rounded-full border border-[#E8DFD3]">
             {languages.map((l) => (
               <button
                 key={l.code}
                 onClick={() => setLanguage(l.code)}
-                className={`px-2 py-0.5 rounded-full text-[11px] font-bold transition-all ${
+                className={`px-2 py-0.5 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
                   language === l.code
-                    ? 'bg-charcoal-900 text-white shadow-xs'
-                    : 'text-charcoal-600 hover:text-charcoal-900'
+                    ? 'bg-[#1F1B18] text-white shadow-xs'
+                    : 'text-[#6B6259] hover:text-[#1F1B18]'
                 }`}
               >
                 {l.label}

@@ -2,10 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Warm editorial & paper-led design tokens */
+  --monee-bg: #FAF7F2;          /* Warm unbleached paper canvas */
+  --monee-surface: #FFFFFF;     /* Crisp warm surface */
+  --monee-surface-warm: #F3ECE2;/* Gentle tinted paper container */
+  --monee-ink: #1F1B18;         /* Deep espresso ink typography */
+  --monee-ink-muted: #6B6259;   /* Warm secondary reading tone */
+  --monee-ink-subtle: #9E9285;  /* Soft divider / pencil tone */
+  --monee-primary: #E85D38;     /* Terracotta primary (warm, human, grounded) */
+  --monee-primary-hover: #D34B26;
+  --monee-primary-soft: #FDEFEA;
+  --monee-secondary: #2C6B56;   /* Earthy sage / deep forest accent */
+  --monee-secondary-soft: #EBF4F0;
+  --monee-accent: #E5A124;      /* Warm golden mustard */
+  --monee-accent-soft: #FCF6E8;
+  --monee-muted: #E8DFD3;       /* Warm editorial separator border */
+  --monee-success: #287D54;     /* Reassuring green */
+  --monee-danger: #D63D2E;      /* Editorial alert red */
+}
+
 @layer base {
   body {
-    @apply bg-[#0e0d0c] text-charcoal-900 font-sans antialiased overflow-x-hidden;
+    background-color: #161412;
+    color: var(--monee-ink);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: #FCE6DD;
+    color: #C03B18;
   }
 }
 
@@ -34,19 +64,19 @@
   scrollbar-width: none;
 }
 
+/* Tactile paper card utilities */
+.paper-card {
+  background-color: var(--monee-surface);
+  border: 1.5px solid var(--monee-muted);
+  box-shadow: 0 3px 12px -2px rgba(31, 27, 24, 0.05);
+}
+
+.paper-card-warm {
+  background-color: var(--monee-surface-warm);
+  border: 1.5px solid var(--monee-muted);
+}
+
 /* Smooth transitions */
 .transition-smooth {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Glass & frosted layers */
-.glass-panel {
-  background: rgba(250, 248, 245, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Glow effects */
-.glow-coral {
-  box-shadow: 0 0 24px rgba(255, 92, 56, 0.25);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
