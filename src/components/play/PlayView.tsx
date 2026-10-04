@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, PlayCircle, Film, ArrowRight, ShieldCheck, Check } from 'lucide-react';
+import { PlayCircle, Film, ShieldCheck, Check } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { conceptsData } from '../../data/concepts';
 import { VolatilitySimulator } from './VolatilitySimulator';
@@ -10,6 +10,7 @@ import { NavSimulator } from './NavSimulator';
 import { NominationSimulator } from './NominationSimulator';
 import { InflationSimulator } from './InflationSimulator';
 import { RiskSimulator } from './RiskSimulator';
+import { translations } from '../../data/translations';
 
 export const PlayView: React.FC = () => {
   const {
@@ -19,6 +20,8 @@ export const PlayView: React.FC = () => {
     completedConcepts,
     language
   } = useApp();
+
+  const t = translations[language];
 
   // If a simulator is active, render it
   if (activeSimulatorId === 'volatility') {
@@ -54,19 +57,21 @@ export const PlayView: React.FC = () => {
 
         <div className="flex items-center justify-between mb-2 relative z-10">
           <span className="text-[10px] font-black uppercase tracking-wider text-coral-400 bg-coral-500/20 px-2.5 py-0.5 rounded-full border border-coral-500/30">
-            Featured Experience
+            {t.todaysChallenge}
           </span>
-          <span className="text-xs text-cream-300 font-semibold">3 min</span>
+          <span className="text-xs text-cream-300 font-semibold">
+            {language === 'mr' ? '३ मिनिटे' : language === 'hi' ? '3 मिनट' : '3 min'}
+          </span>
         </div>
 
         <div className="flex items-start gap-3 relative z-10 mb-3">
           <div className="text-4xl">🎢</div>
           <div>
             <h2 className="text-xl font-black text-white tracking-tight">
-              Market Crash Simulator
+              {t.challengeTitle}
             </h2>
             <p className="text-xs text-cream-300 mt-0.5 leading-relaxed">
-              You start with ₹50,000 fictional money. Can you survive the 5-round market crash without panicking?
+              {t.challengeSub}
             </p>
           </div>
         </div>
@@ -77,13 +82,13 @@ export const PlayView: React.FC = () => {
             className="flex-1 py-3 px-4 rounded-2xl bg-coral-500 hover:bg-coral-600 text-white font-bold text-xs sm:text-sm shadow-coral-glow flex items-center justify-center gap-2 transition-transform active:scale-95"
           >
             <PlayCircle className="w-4 h-4" />
-            <span>Start Crash Simulation</span>
+            <span>{t.playNow}</span>
           </button>
 
           <button
             onClick={() => setActiveMicroVideoConceptId('volatility')}
             className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all"
-            title="Watch in 60s"
+            title={t.watchIn60}
           >
             <Film className="w-4 h-4" />
           </button>
@@ -94,15 +99,15 @@ export const PlayView: React.FC = () => {
       <div className="flex items-center justify-between px-1">
         <div>
           <h3 className="font-extrabold text-base text-charcoal-900">
-            Financial Consequence Simulators
+            {language === 'mr' ? '८ आर्थिक सिम्युलेटर्स' : language === 'hi' ? '8 वित्तीय सिम्युलेटर्स' : 'Consequence Simulators'}
           </h3>
           <p className="text-xs text-charcoal-500">
-            Zero real money • Learn by making choices
+            {language === 'mr' ? 'निर्णय घेऊन परिणाम अनुभवा • शून्य खरा धोका' : language === 'hi' ? 'निर्णय लें और असर देखें • शून्य वास्तविक जोखिम' : 'Experience choices • Zero real money risk'}
           </p>
         </div>
 
         <span className="text-xs font-bold text-charcoal-600 bg-cream-200 px-2.5 py-0.5 rounded-full">
-          {completedConcepts.length}/{conceptsData.length} Done
+          {completedConcepts.length} / {conceptsData.length}
         </span>
       </div>
 
@@ -125,7 +130,7 @@ export const PlayView: React.FC = () => {
                     {isDone ? (
                       <span className="px-2 py-0.5 rounded-full bg-mint-100 text-mint-700 text-[10px] font-bold flex items-center gap-1">
                         <Check className="w-3 h-3 stroke-[3]" />
-                        <span>Done</span>
+                        <span>{language === 'mr' ? 'पूर्ण' : language === 'hi' ? 'पूर्ण' : 'Done'}</span>
                       </span>
                     ) : (
                       <span className="text-[10px] font-bold text-charcoal-400 bg-cream-100 px-2 py-0.5 rounded-full">
@@ -150,13 +155,13 @@ export const PlayView: React.FC = () => {
                   className="flex-1 py-2 px-3 rounded-xl bg-charcoal-900 hover:bg-charcoal-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95"
                 >
                   <PlayCircle className="w-3.5 h-3.5" />
-                  <span>Play Simulator</span>
+                  <span>{language === 'mr' ? 'सराव करा' : language === 'hi' ? 'अभ्यास करें' : 'Play Simulator'}</span>
                 </button>
 
                 <button
                   onClick={() => setActiveMicroVideoConceptId(concept.id)}
                   className="p-2 rounded-xl bg-lavender-50 hover:bg-lavender-100 text-lavender-700 border border-lavender-200 transition-all"
-                  title="Watch in 60s"
+                  title={t.watchIn60}
                 >
                   <Film className="w-3.5 h-3.5" />
                 </button>
@@ -169,7 +174,7 @@ export const PlayView: React.FC = () => {
       {/* Public Good Disclaimer */}
       <div className="p-3 bg-cream-100 rounded-2xl border border-cream-200 text-center text-[11px] text-charcoal-500">
         <ShieldCheck className="w-4 h-4 text-mint-600 inline mr-1 -mt-0.5" />
-        Public-good educational sandboxes. Zero trading, stock tips, or monetization.
+        <span>{t.fictionalDisclaimer}</span>
       </div>
     </div>
   );

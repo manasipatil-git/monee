@@ -1,9 +1,11 @@
 import React from 'react';
 import { Award, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { translations } from '../../data/translations';
 
 export const BadgeUnlockModal: React.FC = () => {
-  const { newBadgeUnlocked, clearNewBadge } = useApp();
+  const { newBadgeUnlocked, clearNewBadge, language } = useApp();
+  const t = translations[language];
 
   if (!newBadgeUnlocked) return null;
 
@@ -23,22 +25,22 @@ export const BadgeUnlockModal: React.FC = () => {
 
         <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-coral-50 border border-coral-200 text-coral-600 text-[11px] font-bold uppercase tracking-wider mb-2">
           <Award className="w-3 h-3" />
-          <span>Badge Unlocked</span>
+          <span>{t.badgeUnlockedNotice || 'Badge Earned!'}</span>
         </div>
 
         <h3 className="text-xl font-extrabold text-charcoal-900 mb-1">
-          {newBadgeUnlocked.title}
+          {newBadgeUnlocked.title[language]}
         </h3>
 
         <p className="text-xs text-charcoal-600 mb-5 leading-relaxed">
-          {newBadgeUnlocked.description}
+          {newBadgeUnlocked.description[language]}
         </p>
 
         <button
           onClick={clearNewBadge}
           className="w-full py-2.5 px-4 rounded-2xl bg-coral-500 hover:bg-coral-600 text-white font-bold text-sm shadow-coral-glow transition-transform active:scale-95"
         >
-          Keep Learning!
+          {language === 'mr' ? 'शिकणे चालू ठेवा!' : language === 'hi' ? 'सीखते रहें!' : 'Keep Learning!'}
         </button>
       </div>
     </div>

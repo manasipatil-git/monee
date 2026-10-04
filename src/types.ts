@@ -35,9 +35,9 @@ export interface ConceptItem {
 
 export interface BadgeItem {
   id: string;
-  title: string;
+  title: Record<Language, string>;
   icon: string;
-  description: string;
+  description: Record<Language, string>;
   category: 'simulator' | 'habit' | 'knowledge' | 'resilience';
   unlocked: boolean;
   unlockedAt?: string;
@@ -58,19 +58,20 @@ export interface VolatilityRound {
   round: number;
   percentageChange: number;
   amount: number;
-  headline: string;
-  subtext: string;
-  question?: string;
-  options?: string[];
+  headline: Record<Language, string>;
+  subtext: Record<Language, string>;
+  trend: 'up' | 'down' | 'crash';
+  question?: Record<Language, string>;
+  options?: Record<Language, string[]>;
 }
 
 export interface MapNode {
   id: string;
   conceptId: string;
-  title: string;
-  subtitle: string;
+  title: Record<Language, string>;
+  subtitle: Record<Language, string>;
   icon: string;
   level: number;
   status: 'completed' | 'current' | 'locked';
-  xOffsetPercent: number; // for winding path layout (-20 to +20)
+  xOffsetPercent: number;
 }

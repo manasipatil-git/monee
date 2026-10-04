@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Sparkles, ArrowRight, Wand2, Lightbulb, BookOpen, Volume2 } from 'lucide-react';
+import { Sparkles, Wand2, Lightbulb, BookOpen } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { jargonDictionary } from '../../data/jargonDictionary';
 import { VoicePlayer } from '../common/VoicePlayer';
 import { translations } from '../../data/translations';
 
 export const MakeItSimple: React.FC = () => {
-  const { language, addXp, unlockBadge, selectedJargonTerm, setSelectedJargonTerm } = useApp();
+  const { language, addXp, unlockBadge, setSelectedJargonTerm } = useApp();
   const [inputText, setInputText] = useState(
     "Expense ratio represents the annualized percentage of fund assets dedicated towards operational and management overheads."
   );
@@ -51,7 +51,6 @@ export const MakeItSimple: React.FC = () => {
   const handleCustomSimplify = () => {
     setIsProcessing(true);
     setTimeout(() => {
-      // Find matching keyword or provide smart conversational breakdown
       const lower = inputText.toLowerCase();
       const matched = jargonDictionary.find(j => 
         lower.includes(j.term.toLowerCase()) || 
@@ -67,7 +66,6 @@ export const MakeItSimple: React.FC = () => {
           analogy: matched.analogy
         });
       } else {
-        // Universal conversational template for arbitrary text
         setSimplifiedResult({
           simplified: "Think of this simply: It's an agreement detailing who does what with your money and what costs or terms apply before you can withdraw.",
           eli15: "Imagine paying a ticket for a ride: this clause is just the safety rule and the maintenance fee printed on the back of the ticket.",
@@ -100,16 +98,16 @@ export const MakeItSimple: React.FC = () => {
           </div>
           <div>
             <h3 className="font-extrabold text-base text-charcoal-900 leading-tight">
-              {t.makeSimple || 'Make this simple'}
+              {t.makeSimple}
             </h3>
             <p className="text-[11px] text-charcoal-500">
-              Paste confusing terms or tap a sample below
+              {t.makeSimpleSub}
             </p>
           </div>
         </div>
 
         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-mint-100 text-mint-700 border border-mint-200">
-          No Jargon
+          {language === 'mr' ? 'सोपी भाषा' : language === 'hi' ? 'नो जार्गन' : 'No Jargon'}
         </span>
       </div>
 
@@ -136,7 +134,13 @@ export const MakeItSimple: React.FC = () => {
           rows={3}
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder="Paste any confusing financial clause or definition here..."
+          placeholder={
+            language === 'mr'
+              ? "कोणताही कठीण आर्थिक शब्द किंवा नियम येथे पेस्ट करा..."
+              : language === 'hi'
+              ? "कोई भी कठिन वित्तीय वाक्य यहाँ पेस्ट करें..."
+              : "Paste any confusing financial clause or definition here..."
+          }
           className="w-full text-xs p-3 rounded-2xl bg-white border border-cream-300 focus:border-coral-500 focus:ring-1 focus:ring-coral-500 outline-none resize-none leading-relaxed text-charcoal-800"
         />
         <button
@@ -145,7 +149,11 @@ export const MakeItSimple: React.FC = () => {
           className="absolute bottom-2.5 right-2.5 px-3 py-1 rounded-xl bg-coral-500 hover:bg-coral-600 text-white text-xs font-bold flex items-center gap-1 shadow-coral-glow transition-transform active:scale-95 disabled:opacity-50"
         >
           <Wand2 className="w-3.5 h-3.5" />
-          <span>{isProcessing ? 'Simplifying...' : 'Simplify'}</span>
+          <span>
+            {isProcessing
+              ? (language === 'mr' ? 'सोपे करत आहे...' : language === 'hi' ? 'सरल कर रहे हैं...' : 'Simplifying...')
+              : (language === 'mr' ? 'सोपे करा' : language === 'hi' ? 'सरल बनाएं' : 'Simplify')}
+          </span>
         </button>
       </div>
 
@@ -157,10 +165,10 @@ export const MakeItSimple: React.FC = () => {
             <span className="text-xl">💡</span>
             <div className="flex-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-coral-600">
-                Core Meaning
+                {language === 'mr' ? 'थोडक्यात अर्थ' : language === 'hi' ? 'सीधा अर्थ' : 'Core Meaning'}
               </span>
               <p className="text-xs sm:text-sm font-semibold text-charcoal-900 leading-snug">
-                "{simplifiedResult.simplified}"
+                "{language === 'mr' ? simplifiedResult.marathi : language === 'hi' ? simplifiedResult.hindi : simplifiedResult.simplified}"
               </p>
             </div>
           </div>
@@ -168,10 +176,10 @@ export const MakeItSimple: React.FC = () => {
           {/* Perspective selector tabs */}
           <div className="flex items-center gap-1 bg-cream-100 p-1 rounded-xl mb-3">
             {[
-              { id: 'eli15' as const, label: t.eli15 || "Explain like I'm 15", icon: Lightbulb },
-              { id: 'hindi' as const, label: t.inHindi || 'हिंदी में', flag: '🇮🇳' },
-              { id: 'marathi' as const, label: t.inMarathi || 'मराठीत', flag: '🇮🇳' },
-              { id: 'analogy' as const, label: t.giveExample || 'Everyday Analogy', icon: BookOpen },
+              { id: 'marathi' as const, label: t.inMarathi, flag: '🇮🇳' },
+              { id: 'hindi' as const, label: t.inHindi, flag: '🇮🇳' },
+              { id: 'eli15' as const, label: t.eli15, icon: Lightbulb },
+              { id: 'analogy' as const, label: t.giveExample, icon: BookOpen },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -190,9 +198,9 @@ export const MakeItSimple: React.FC = () => {
           {/* Content box */}
           <div className="bg-cream-50/80 rounded-xl p-3 border border-cream-200 mb-3">
             <p className="text-xs sm:text-sm text-charcoal-800 leading-relaxed font-medium">
-              {activeTab === 'eli15' && simplifiedResult.eli15}
-              {activeTab === 'hindi' && simplifiedResult.hindi}
               {activeTab === 'marathi' && simplifiedResult.marathi}
+              {activeTab === 'hindi' && simplifiedResult.hindi}
+              {activeTab === 'eli15' && simplifiedResult.eli15}
               {activeTab === 'analogy' && simplifiedResult.analogy}
             </p>
           </div>
@@ -201,13 +209,14 @@ export const MakeItSimple: React.FC = () => {
           <div className="flex items-center justify-between">
             <VoicePlayer
               textToSpeak={getActiveTextToSpeak()}
+              hindiFallbackText={simplifiedResult.hindi}
               size="sm"
               variant="secondary"
-              label={language === 'hi' ? 'सुनें' : language === 'mr' ? 'ऐका' : 'Listen'}
+              label={language === 'mr' ? 'ऐका' : language === 'hi' ? 'सुनें' : 'Listen'}
             />
 
             <span className="text-[10px] text-charcoal-400 italic">
-              Public education tool • IIT (BHU) Hackathon
+              {language === 'mr' ? 'सामान्य लोकांसाठी सोपे शिक्षण' : 'Investor Education for Bharat'}
             </span>
           </div>
         </div>

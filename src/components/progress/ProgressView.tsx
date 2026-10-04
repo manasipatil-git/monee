@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flame, Award, Zap, Brain, CheckCircle, HelpCircle, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { Flame, Award, Zap, CheckCircle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { conceptsData } from '../../data/concepts';
 import { translations } from '../../data/translations';
@@ -9,8 +9,6 @@ export const ProgressView: React.FC = () => {
     streakDays,
     totalXp,
     badges,
-    completedConcepts,
-    recalledConcepts,
     markConceptRecalled,
     addXp,
     language
@@ -19,22 +17,21 @@ export const ProgressView: React.FC = () => {
   const [memoryAnswerIndex, setMemoryAnswerIndex] = useState<number | null>(null);
   const [hasAnsweredMemory, setHasAnsweredMemory] = useState(false);
   const [dailyChallengeDone, setDailyChallengeDone] = useState(false);
-  const [dailyAnswerIndex, setDailyAnswerIndex] = useState<number | null>(null);
 
   const t = translations[language];
 
   // Weekly days
   const weekDays = [
-    { day: 'M', active: true },
-    { day: 'T', active: true },
-    { day: 'W', active: true },
-    { day: 'T', active: true }, // Today
-    { day: 'F', active: false },
-    { day: 'S', active: false },
-    { day: 'S', active: false },
+    { day: language === 'mr' ? 'सो' : language === 'hi' ? 'सो' : 'M', active: true },
+    { day: language === 'mr' ? 'मं' : language === 'hi' ? 'मं' : 'T', active: true },
+    { day: language === 'mr' ? 'बु' : language === 'hi' ? 'बु' : 'W', active: true },
+    { day: language === 'mr' ? 'गु' : language === 'hi' ? 'गु' : 'T', active: true },
+    { day: language === 'mr' ? 'शु' : language === 'hi' ? 'शु' : 'F', active: false },
+    { day: language === 'mr' ? 'श' : language === 'hi' ? 'श' : 'S', active: false },
+    { day: language === 'mr' ? 'र' : language === 'hi' ? 'र' : 'S', active: false },
   ];
 
-  // Active memory quiz using Volatility concept
+  // Memory quiz using Volatility concept
   const volatilityConcept = conceptsData[0];
   const memoryQuiz = volatilityConcept.memoryCheck;
 
@@ -46,8 +43,37 @@ export const ProgressView: React.FC = () => {
     }
   };
 
+  const dailyQuestions = {
+    question: {
+      en: "What does NAV truly tell an investor?",
+      hi: "NAV का असली मतलब क्या है?",
+      mr: "NAV चा खरा अर्थ काय आहे?"
+    },
+    options: {
+      en: [
+        "It shows whether a fund is on cheap discount",
+        "It is the per-slice value of the shared basket",
+        "It guarantees next month's return"
+      ],
+      hi: [
+        "यह बताता है कि फंड सस्ते डिस्काउंट पर है",
+        "यह एक साझी टोकरी के प्रति टुकड़े की आज की कीमत है",
+        "यह अगले महीने का पक्का मुनाफा बताता है"
+      ],
+      mr: [
+        "फंड स्वस्त डिस्काउंटवर आहे हे सांगते",
+        "सामायिक टोपलीतील एका तुकड्याचे आजचे मूल्य सांगते",
+        "पुढच्या महिन्याचा हमखास नफा सांगते"
+      ]
+    },
+    feedback: {
+      en: "NAV is merely the per-unit slice value of the basket, never a discount. You earned +20 XP!",
+      hi: "NAV केवल एक टुकड़े का माप है, कोई डिस्काउंट नहीं। आपको +20 XP मिले!",
+      mr: "NAV म्हणजे फक्त तुकड्याचे माप, कोणताही डिस्काउंट नाही. तुम्हाला +20 XP मिळाले!"
+    }
+  };
+
   const handleDailySubmit = (idx: number) => {
-    setDailyAnswerIndex(idx);
     setDailyChallengeDone(true);
     addXp(20, 'Daily Challenge Completed');
   };
@@ -63,17 +89,17 @@ export const ProgressView: React.FC = () => {
             </span>
             <div>
               <div className="text-2xl font-black tracking-tight">
-                {streakDays} DAY STREAK
+                {streakDays} {t.streakDaysLabel}
               </div>
               <div className="text-xs text-white/80 font-medium">
-                Keep your money-learning streak alive
+                {t.streakEncouragement}
               </div>
             </div>
           </div>
 
           <div className="text-right">
             <span className="text-xs font-bold bg-white/20 px-2.5 py-1 rounded-full text-white">
-              Habit Builder
+              {language === 'mr' ? 'रोजची सवय' : language === 'hi' ? 'दैनिक आदत' : 'Habit'}
             </span>
           </div>
         </div>
@@ -104,10 +130,10 @@ export const ProgressView: React.FC = () => {
             <span className="text-2xl">⚡</span>
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-coral-600">
-                Daily 1-Min Challenge
+                {language === 'mr' ? 'आजचे १-मिनिट आव्हान' : language === 'hi' ? 'आज की 1-मिनट चुनौती' : 'Daily 1-Min Challenge'}
               </span>
               <h3 className="font-extrabold text-sm sm:text-base text-charcoal-900">
-                "What does NAV truly tell an investor?"
+                "{dailyQuestions.question[language]}"
               </h3>
             </div>
           </div>
@@ -118,11 +144,7 @@ export const ProgressView: React.FC = () => {
 
         {!dailyChallengeDone ? (
           <div className="space-y-2 mt-3">
-            {[
-              "It shows whether a mutual fund is on cheap discount sale",
-              "It represents the per-unit value of the underlying pool",
-              "It guarantees next month's return percentage"
-            ].map((opt, i) => (
+            {dailyQuestions.options[language].map((opt, i) => (
               <button
                 key={i}
                 onClick={() => handleDailySubmit(i)}
@@ -136,31 +158,29 @@ export const ProgressView: React.FC = () => {
           <div className="mt-3 p-3 bg-mint-50 border border-mint-200 rounded-2xl animate-fade-in text-xs text-charcoal-800">
             <div className="font-bold text-mint-800 flex items-center gap-1 mb-1">
               <CheckCircle className="w-4 h-4 text-mint-600" />
-              <span>Great Job! Daily Streak Maintained!</span>
+              <span>{language === 'mr' ? 'छान! आजची सवय पूर्ण झाली!' : language === 'hi' ? 'शाबाश! आज की आदत पूरी हुई!' : 'Great Job! Daily Streak Kept!'}</span>
             </div>
-            <p>
-              NAV is merely the per-unit slice value of the basket, never a discount. You earned +20 XP!
-            </p>
+            <p>{dailyQuestions.feedback[language]}</p>
           </div>
         )}
       </div>
 
-      {/* Memory Boost 🧠 Card */}
+      {/* Memory Check 🧠 Card */}
       <div className="bg-lavender-50/60 rounded-3xl p-4 sm:p-5 border border-lavender-200 shadow-soft">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🧠</span>
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-lavender-800">
-                {t.memoryBoost || 'Memory Boost 🧠'}
+                {t.memoryBoost}
               </span>
               <h3 className="font-extrabold text-sm sm:text-base text-charcoal-900">
-                You learned volatility recently. Recall test:
+                {language === 'mr' ? 'उजळणी चाचणी (Memory Check):' : language === 'hi' ? 'याददाश्त टेस्ट:' : 'Quick Recall Check:'}
               </h3>
             </div>
           </div>
           <span className="text-xs font-bold text-lavender-800 bg-lavender-100 px-2 py-0.5 rounded-full border border-lavender-200">
-            Spaced Repetition
+            {language === 'mr' ? 'उजळणी' : language === 'hi' ? 'पुनरावृत्ति' : 'Spaced Recall'}
           </span>
         </div>
 
@@ -197,8 +217,8 @@ export const ProgressView: React.FC = () => {
           <div className="p-3 bg-white rounded-2xl border border-lavender-200 text-xs animate-fade-in">
             <div className="font-bold text-charcoal-900 mb-0.5">
               {memoryAnswerIndex === memoryQuiz.correctIndex
-                ? (t.rememberedFeedback || 'Nice! You remembered it.')
-                : (t.needsReviewFeedback || "Good try! We'll review this again soon.")}
+                ? t.rememberedFeedback
+                : t.needsReviewFeedback}
             </div>
             <p className="text-charcoal-600">
               {memoryQuiz.explanation[language]}
@@ -207,60 +227,17 @@ export const ProgressView: React.FC = () => {
         )}
       </div>
 
-      {/* XP System & Breakdown Card */}
-      <div className="bg-white rounded-3xl p-4 sm:p-5 border border-cream-300 shadow-soft">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-butter-100 text-butter-700 flex items-center justify-center font-bold">
-              <Zap className="w-4 h-4 fill-current" />
-            </div>
-            <div>
-              <h3 className="font-extrabold text-sm sm:text-base text-charcoal-900">
-                Knowledge XP Engine
-              </h3>
-              <p className="text-[11px] text-charcoal-500">
-                Rewarding educational consistency, never financial risk
-              </p>
-            </div>
-          </div>
-
-          <div className="text-right">
-            <span className="text-xl font-black text-charcoal-900">{totalXp}</span>
-            <span className="text-[10px] text-charcoal-400 block font-bold">TOTAL XP</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-          {[
-            { label: 'Interactive Lesson', xp: '+20 XP', icon: '🌱' },
-            { label: 'Simulation Test', xp: '+40 XP', icon: '🎢' },
-            { label: 'Emotional Reflection', xp: '+15 XP', icon: '💡' },
-            { label: 'Voice Lesson', xp: '+10 XP', icon: '🔊' },
-            { label: 'Memory Boost', xp: '+15 XP', icon: '🧠' },
-            { label: 'Jargon Simplifier', xp: '+15 XP', icon: '✨' },
-          ].map((r, i) => (
-            <div key={i} className="p-2.5 bg-cream-50 rounded-xl border border-cream-200">
-              <div className="flex items-center justify-between mb-1">
-                <span>{r.icon}</span>
-                <span className="font-extrabold text-charcoal-900">{r.xp}</span>
-              </div>
-              <div className="text-[11px] text-charcoal-600 leading-tight">{r.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Badges Showcase */}
       <div className="bg-white rounded-3xl p-4 sm:p-5 border border-cream-300 shadow-soft">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Award className="w-5 h-5 text-coral-500" />
             <h3 className="font-extrabold text-base text-charcoal-900">
-              Resilience Badges
+              {language === 'mr' ? 'मिळालेले बॅजेस' : language === 'hi' ? 'अर्जित बैज' : 'Resilience Badges'}
             </h3>
           </div>
           <span className="text-xs font-bold text-charcoal-600">
-            {badges.filter(b => b.unlocked).length}/{badges.length} Unlocked
+            {badges.filter(b => b.unlocked).length} / {badges.length}
           </span>
         </div>
 
@@ -278,17 +255,19 @@ export const ProgressView: React.FC = () => {
                 <span className="text-2xl">{b.icon}</span>
                 {b.unlocked ? (
                   <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-mint-100 text-mint-700">
-                    Earned
+                    {language === 'mr' ? 'मिळाला' : language === 'hi' ? 'अर्जित' : 'Earned'}
                   </span>
                 ) : (
-                  <span className="text-[9px] font-bold text-charcoal-400">Locked</span>
+                  <span className="text-[9px] font-bold text-charcoal-400">
+                    {language === 'mr' ? 'बाकी' : language === 'hi' ? 'बंद' : 'Locked'}
+                  </span>
                 )}
               </div>
               <h4 className="font-extrabold text-xs text-charcoal-900 mb-0.5">
-                {b.title}
+                {b.title[language]}
               </h4>
               <p className="text-[10px] text-charcoal-500 leading-snug">
-                {b.description}
+                {b.description[language]}
               </p>
             </div>
           ))}
